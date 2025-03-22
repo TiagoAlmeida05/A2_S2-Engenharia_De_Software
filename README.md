@@ -111,7 +111,62 @@ For each user story you should write also the acceptance tests (textually in [Gh
 **Value and effort**.
 At the end, it is good to add a rough indication of the value of the user story to the customers (e.g. [MoSCoW](https://en.wikipedia.org/wiki/MoSCoW_method) method) and the team should add an estimation of the effort to implement it, for example, using points in a kind-of-a Fibonnacci scale (1,2,3,5,8,13,20,40, no idea).
 
--->
+--> 
+#### Story #1 
+    
+As a Client, I want to browse about-to-expire supermarket products on sale, so that I can save money and support sustainable consumer habits.  
+
+**Value:** Must Have
+
+**Effort:** M
+
+#### Story #2
+
+As a Client, I want to find clothing items that are about to be removed from stores, so that I can make affordable purchases while reducing fashion waste.
+
+**Value:** Must Have
+
+**Effort:** M
+
+#### Story #3
+
+As a Business, I want to register my store on the app, so that I can gain visibility and attract clients for my discounted products.
+
+**Value:** Must Have
+
+**Effort:** S
+
+#### Story #4
+
+As a Business, I want to add new about-to-expire products to the app, so that customers are aware of my store’s offers and I can reduce waste.
+
+**Value:** Must Have
+
+**Effort:** M
+
+#### Story #5
+
+As a Business, I want the app to notify users about my discounted product catalog, so that I can efficiently clear out my inventory.
+
+**Value:** Should Have
+
+**Effort:** L
+
+#### Story #6
+
+As a Client, I want to save my favorite discounted products, so that I can quickly access them before they expire.
+
+**Value:** Could Have
+
+**Effort:** M
+
+#### Story #7
+
+As a Business, I want to see reports on which discounted items sell best, so that I can optimize future offers.
+
+**Value:** Could Have
+
+**Effort:** XL
 
 ### Domain model
 
