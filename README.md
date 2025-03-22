@@ -1,10 +1,57 @@
-# 2LEIC12T3
-As a Client, I want to access about-to-expire supermarket products on sale, so that I practice sustainable consumer habits.
- 
-As a Client, I want to access clothing items about-to-be-off-sale, so that I refrain from supporting fast fashion.
+[your product name] Development Report
 
-As a Business, I want to add my store to the app so that I can be easily recognizable by clients and turn a profit from my unsold items.
+Welcome to the documentation pages of [your product name]!
 
-As a Business, I want to add new items that are about to expire so that users are aware of what my store has to offer.
+This Software Development Report, tailored for LEIC-ES-2024-25, provides comprehensive details about [your product name], from high-level vision to low-level implementation decisions. It’s organised by the following activities.
 
-As a Business, I want the app to notify users about my item catalog, so that I efficiently empty my inventory.
+    Business modeling
+        Product Vision
+        Features and Assumptions
+        Elevator Pitch
+    Requirements
+        User stories
+        Domain model
+    Architecture and Design
+        Logical architecture
+        Physical architecture
+        Vertical prototype
+    Project management
+        Sprint 0
+        Sprint 1
+        Sprint 2
+        Sprint 3
+        Sprint 4
+        Final Release
+
+Contributions are expected to be made exclusively by the initial team, but we may open them to the community, after the course, in all areas and topics: requirements, technologies, development, experimentation, testing, etc.
+
+Please contact us!
+
+Thank you!
+
+    team member name and email
+    team member name and email
+    team member name and email
+    team member name and email
+    team member name and email
+
+Business Modelling
+
+Business modeling in software development involves defining the product's vision, understanding market needs, aligning features with user expectations, and setting the groundwork for strategic planning and execution.
+Product Vision
+Features and Assumptions
+Elevator Pitch
+Requirements
+User Stories
+Domain model
+Architecture and Design
+Logical architecture
+Physical architecture
+Vertical prototype
+Project management
+Sprint 0
+Sprint 1
+Sprint 2
+Sprint 3
+Sprint 4
+Final Release
