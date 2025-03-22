@@ -116,6 +116,12 @@ At the end, it is good to add a rough indication of the value of the user story 
     
 As a Client, I want to browse about-to-expire supermarket products on sale, so that I can save money and support sustainable consumer habits.  
 
+**Acceptance Tests**
+```gherkin
+
+
+```
+
 **Value:** Must Have
 
 **Effort:** M
@@ -124,6 +130,10 @@ As a Client, I want to browse about-to-expire supermarket products on sale, so t
 
 As a Client, I want to find clothing items that are about to be removed from stores, so that I can make affordable purchases while reducing fashion waste.
 
+**Acceptance Tests**
+```gherkin
+ 
+```
 **Value:** Must Have
 
 **Effort:** M
@@ -131,6 +141,11 @@ As a Client, I want to find clothing items that are about to be removed from sto
 #### Story #3
 
 As a Business, I want to register my store on the app, so that I can gain visibility and attract clients for my discounted products.
+
+**Acceptance Tests**
+```gherkin
+ 
+```
 
 **Value:** Must Have
 
@@ -140,6 +155,11 @@ As a Business, I want to register my store on the app, so that I can gain visibi
 
 As a Business, I want to add new about-to-expire products to the app, so that customers are aware of my store’s offers and I can reduce waste.
 
+**Acceptance Tests**
+```gherkin
+ 
+```
+
 **Value:** Must Have
 
 **Effort:** M
@@ -147,6 +167,11 @@ As a Business, I want to add new about-to-expire products to the app, so that cu
 #### Story #5
 
 As a Business, I want the app to notify users about my discounted product catalog, so that I can efficiently clear out my inventory.
+
+**Acceptance Tests**
+```gherkin
+ 
+```
 
 **Value:** Should Have
 
@@ -156,6 +181,11 @@ As a Business, I want the app to notify users about my discounted product catalo
 
 As a Client, I want to save my favorite discounted products, so that I can quickly access them before they expire.
 
+**Acceptance Tests**
+```gherkin
+ 
+```
+
 **Value:** Could Have
 
 **Effort:** M
@@ -163,6 +193,11 @@ As a Client, I want to save my favorite discounted products, so that I can quick
 #### Story #7
 
 As a Business, I want to see reports on which discounted items sell best, so that I can optimize future offers.
+
+**Acceptance Tests**
+```gherkin
+ 
+```
 
 **Value:** Could Have
 
