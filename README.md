@@ -60,7 +60,7 @@ To learn more about how to write a good product vision, please see:
 * [How to write a vision, by dummies.com](https://www.dummies.com/business/marketing/branding/how-to-write-vision-and-mission-statements-for-your-brand/)
 * [20 Inspiring Vision Statement Examples (2019 Updated), by lifehack.org](https://www.lifehack.org/articles/work/20-sample-vision-statement-for-the-new-startup.html)
 -->
-
+Turning last-chance products into first-choice deals—reducing waste, saving money, and connecting smart shoppers with great discounts.
 
 ### Features and Assumptions
 <!-- 
