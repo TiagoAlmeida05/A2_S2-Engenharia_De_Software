@@ -78,7 +78,10 @@ As a Client, I want to browse about-to-expire supermarket products on sale, so t
 
 **Acceptance Tests**
 ```gherkin
-
+    Given I am a registered user
+    When I navigate to the supermarket products section
+    Then I should see a list of available about-to-expire discounted products
+    And each product should display the discount, expiration date, and store location
 
 ```
 
@@ -92,7 +95,10 @@ As a Client, I want to find clothing items that are about to be removed from sto
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a registered user
+    When I navigate to the clothing section
+    Then I should see a list of clothing items that are about to be removed from stores
+    And each item should display the discount, removal date, and store location
 ```
 **Value:** Must Have
 
@@ -104,7 +110,10 @@ As a Business, I want to register my store on the app, so that I can gain visibi
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a business owner
+    When I navigate to the store registration page
+    And I provide valid store details (name, address, category, contact info)
+    Then my store should be successfully registered and visible to clients
 ```
 
 **Value:** Must Have
@@ -117,7 +126,10 @@ As a Business, I want to add new about-to-expire products to the app, so that cu
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a registered business user
+    When I navigate to the product listing page
+    And I enter the product details (name, price, discount, expiration date, category)
+    Then the product should be added and visible to clients in the relevant section
 ```
 
 **Value:** Must Have
@@ -130,7 +142,9 @@ As a Business, I want the app to notify users about my discounted product catalo
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a business user with products listed
+    When a product is added or updated with a discount
+    Then users who have opted in for notifications should receive an alert
 ```
 
 **Value:** Should Have
@@ -143,7 +157,10 @@ As a Client, I want to save my favorite discounted products, so that I can quick
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a logged-in client
+    And I am browsing discounted products
+    When I click the "Add to Favorites" button on a product
+    Then the product should be added to my favorites list
 ```
 
 **Value:** Could Have
@@ -156,7 +173,10 @@ As a Business, I want to see reports on which discounted items sell best, so tha
 
 **Acceptance Tests**
 ```gherkin
- 
+    Given I am a logged-in business owner
+    And I have previously listed discounted products
+    When I navigate to the "Sales Reports" section
+    Then I should see a report of discounted products with sales data
 ```
 
 **Value:** Could Have
