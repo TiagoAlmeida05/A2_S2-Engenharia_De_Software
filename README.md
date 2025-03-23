@@ -55,7 +55,6 @@ Turning last-chance products into first-choice deals—reducing waste, saving mo
 **User Profiles & Purchase History** – Tracks past purchases and offers personalized deals. 
 
 **Review & Rating System** – Users can rate sellers, products, and overall shopping experience. 
-
 **Wishlist & Favorites** – Customers can save favorite stores or products for later.
 
 ### Elevator Pitch
