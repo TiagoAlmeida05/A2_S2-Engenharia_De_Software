@@ -225,11 +225,13 @@ In this section you should start by briefly describing the components of the pro
 
 ### Logical architecture
 
+The diagram organizes components into packages like Authentication, Registration, and Product Management, depicting navigation between login, registration, and product category screens.
 ![image](https://github.com/user-attachments/assets/dd4b8a7a-2af1-4847-b1b3-c3c06c890f22)
 
 
 ### Physical architecture
 
+This diagram shows the system's structure, with frontend devices (Client and Business smartphones) interacting with Firebase services (Authentication, Firestore, and Cloud Functions) for user management, product browsing, and business operations.
 ![image](https://github.com/user-attachments/assets/81d81a2c-4acc-4661-ab70-00673205df54)
 
 
