@@ -205,15 +205,10 @@ As a Business, I want to see reports on which discounted items sell best, so tha
 
 ### Domain model
 
-<!-- 
-To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app. 
-Also provide a short textual description of each concept (domain class). 
+![image](https://github.com/user-attachments/assets/3c90e070-c817-4c35-acd5-ca182875436c)
 
-Example:
- <p align="center" justify="center">
-  <img src="https://github.com/FEUP-LEIC-ES-2022-23/templates/blob/main/images/DomainModel.png"/>
-</p>
--->
+
+
 
 
 ## Architecture and Design
