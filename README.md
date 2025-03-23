@@ -46,12 +46,12 @@ Turning last-chance products into first-choice deals—reducing waste, saving mo
 
 ### Features and Assumptions
 
-Discounted Marketplace – Customers can buy surplus food and unsold clothes at significantly reduced prices. 
-Real-Time Inventory Updates – Businesses can update stock levels dynamically to avoid over-listing. 
-Business Partnerships – Stores, restaurants, and retailers can list their surplus items. 
-User Profiles & Purchase History – Tracks past purchases and offers personalized deals. 
-Review & Rating System – Users can rate sellers, products, and overall shopping experience. 
-Wishlist & Favorites – Customers can save favorite stores or products for later.
+**Discounted Marketplace** – Customers can buy surplus food and unsold clothes at significantly reduced prices. 
+**Real-Time Inventory Updates** – Businesses can update stock levels dynamically to avoid over-listing. 
+**Business Partnerships** – Stores, restaurants, and retailers can list their surplus items. 
+**User Profiles & Purchase History** – Tracks past purchases and offers personalized deals. 
+**Review & Rating System** – Users can rate sellers, products, and overall shopping experience. 
+**Wishlist & Favorites** – Customers can save favorite stores or products for later.
 
 ### Elevator Pitch
 <!-- 
