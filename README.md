@@ -76,6 +76,11 @@ Take a look at the following links to learn some techniques:
     
 As a Client, I want to browse about-to-expire supermarket products on sale, so that I can save money and support sustainable consumer habits.  
 
+**Mockup:**
+
+![ShopMockUp](https://github.com/user-attachments/assets/4a347b44-8eb0-408b-aac7-8644130f9cdc)
+
+
 **Acceptance Tests**
 ```gherkin
     Given I am a registered user
@@ -93,6 +98,11 @@ As a Client, I want to browse about-to-expire supermarket products on sale, so t
 
 As a Client, I want to find clothing items that are about to be removed from stores, so that I can make affordable purchases while reducing fashion waste.
 
+**Mockup:**
+
+![ClothesMockUp](https://github.com/user-attachments/assets/2666f9fa-5650-4573-b37f-7180b1cfec26)
+
+
 **Acceptance Tests**
 ```gherkin
     Given I am a registered user
@@ -107,6 +117,11 @@ As a Client, I want to find clothing items that are about to be removed from sto
 #### _User Story #3: **Implement Business Sign-up**_
 
 As a Business, I want to register my store on the app, so that I can gain visibility and attract clients for my discounted products.
+
+**Mockup:**
+
+![Business Registration](https://github.com/user-attachments/assets/87ca36c4-371c-41f0-a6f6-f55d42966d16)
+
 
 **Acceptance Tests**
 ```gherkin
@@ -154,6 +169,11 @@ As a Business, I want the app to notify users about my discounted product catalo
 #### _User Story #6: **Implement a "Favourites" Functionality**_
 
 As a Client, I want to save my favorite discounted products, so that I can quickly access them before they expire.
+
+**Mockup:**
+
+![FavouritesMockUp](https://github.com/user-attachments/assets/3f9b0fd6-48ba-4058-97ce-ed4d786dc756)
+
 
 **Acceptance Tests**
 ```gherkin
