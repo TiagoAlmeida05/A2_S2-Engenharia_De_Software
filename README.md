@@ -72,7 +72,7 @@ Take a look at the following links to learn some techniques:
 
 ### User Stories
 
-#### User Story #1: **Implement Browsing Functionalities (Food)**
+#### _User Story #1: **Implement Browsing Functionalities (Food)**_
     
 As a Client, I want to browse about-to-expire supermarket products on sale, so that I can save money and support sustainable consumer habits.  
 
@@ -89,7 +89,7 @@ As a Client, I want to browse about-to-expire supermarket products on sale, so t
 
 **Effort:** M
 
-#### User Story #2: **Implement Browsing Functionalities (Clothing)**
+#### _User Story #2: **Implement Browsing Functionalities (Clothing)**_
 
 As a Client, I want to find clothing items that are about to be removed from stores, so that I can make affordable purchases while reducing fashion waste.
 
@@ -104,7 +104,7 @@ As a Client, I want to find clothing items that are about to be removed from sto
 
 **Effort:** M
 
-#### User Story #3: **Implement Business Sign-up**
+#### _User Story #3: **Implement Business Sign-up**_
 
 As a Business, I want to register my store on the app, so that I can gain visibility and attract clients for my discounted products.
 
@@ -120,7 +120,7 @@ As a Business, I want to register my store on the app, so that I can gain visibi
 
 **Effort:** S
 
-#### User Story #4: **Implement a Way for Businesses to Add New Products**
+#### _User Story #4: **Implement a Way for Businesses to Add New Products**_
 
 As a Business, I want to add new about-to-expire products to the app, so that customers are aware of my store’s offers and I can reduce waste.
 
@@ -136,7 +136,7 @@ As a Business, I want to add new about-to-expire products to the app, so that cu
 
 **Effort:** M
 
-#### User Story #5: **Implement a Way For The App To Notify Users About Newly Added Products**
+#### _User Story #5: **Implement a Way For The App To Notify Users About Newly Added Products**_
 
 As a Business, I want the app to notify users about my discounted product catalog, so that I can efficiently clear out my inventory.
 
@@ -151,7 +151,7 @@ As a Business, I want the app to notify users about my discounted product catalo
 
 **Effort:** L
 
-#### User Story #6: **Implement a "Favourites" Functionality**
+#### _User Story #6: **Implement a "Favourites" Functionality**_
 
 As a Client, I want to save my favorite discounted products, so that I can quickly access them before they expire.
 
@@ -167,7 +167,7 @@ As a Client, I want to save my favorite discounted products, so that I can quick
 
 **Effort:** M
 
-#### User Story #7: **Implement Product Stats For Businesses**
+#### _User Story #7: **Implement Product Stats For Businesses**_
 
 As a Business, I want to see reports on which discounted items sell best, so that I can optimize future offers.
 
