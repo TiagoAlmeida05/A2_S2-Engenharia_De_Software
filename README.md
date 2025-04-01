@@ -263,14 +263,14 @@ You can find below information and references related with the project managemen
 -->
 
 ### Sprint 0
-Spring backlog:
+Spring Backlog:
 ![Captura de ecrã 2025-04-01 111109](https://github.com/user-attachments/assets/34bc2503-ec4c-4db9-b52f-9eff0096f148)
 
 Spring Review:
 ![Captura de ecrã 2025-04-01 111146](https://github.com/user-attachments/assets/6af16ed8-6a98-4e1a-bc4a-f8392b723cd7)
 
 ### Sprint 1
-Sprint backlog:
+Sprint Backlog:
 ![imagem](https://github.com/user-attachments/assets/c18c74db-28d3-4018-8113-5c819b18c6dc)
 
 
