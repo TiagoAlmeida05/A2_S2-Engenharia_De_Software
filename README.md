@@ -273,6 +273,8 @@ Spring Review:
 Sprint Backlog:
 ![imagem](https://github.com/user-attachments/assets/c18c74db-28d3-4018-8113-5c819b18c6dc)
 
+Sprint Review:
+![image](https://github.com/user-attachments/assets/8e703975-c7ad-4681-a6c0-9eac8d351a9b)
 
 ### Sprint 2
 
