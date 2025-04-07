@@ -274,7 +274,8 @@ Sprint Backlog:
 ![imagem](https://github.com/user-attachments/assets/c18c74db-28d3-4018-8113-5c819b18c6dc)
 
 Sprint Review:
-![image](https://github.com/user-attachments/assets/f42bde72-c982-42fa-b001-8d830eece601)
+![image](https://github.com/user-attachments/assets/6afaa71d-8978-4163-95c8-f7f94edbcb1e)
+
 
 ### Sprint 2
 
