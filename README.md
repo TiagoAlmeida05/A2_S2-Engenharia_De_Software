@@ -266,7 +266,7 @@ You can find below information and references related with the project managemen
 Spring Backlog:
 ![Captura de ecrã 2025-04-01 111109](https://github.com/user-attachments/assets/34bc2503-ec4c-4db9-b52f-9eff0096f148)
 
-Spring Review:
+Sprint Review:
 ![Captura de ecrã 2025-04-01 111146](https://github.com/user-attachments/assets/6af16ed8-6a98-4e1a-bc4a-f8392b723cd7)
 
 ### Sprint 1
@@ -274,8 +274,22 @@ Sprint Backlog:
 ![imagem](https://github.com/user-attachments/assets/c18c74db-28d3-4018-8113-5c819b18c6dc)
 
 Sprint Review:
-![image](https://github.com/user-attachments/assets/6afaa71d-8978-4163-95c8-f7f94edbcb1e)
+![image](https://github.com/user-attachments/assets/b0801d49-73f7-4f9b-88a0-074bfcb9bccf)
 
+What we implemented during this sprint:
+
+- Login and Sign Up Authentication added for Users and Businesses using Firebase
+- Basic simple search for Clothes
+- Ability to add Clothes through a Database
+- New Page where Businesses are going to be able to add new products (for now it's just the page, not supported by any logic)
+
+What needs improvement:
+
+- Simple search should not only work for exact searches (ex: jacket should return Jacket and not Null). Search with string contains instead of exac
+- t matches
+- Have a message pop up when user/business uses wrong login data instead of the default one
+- Implement the logic behind adding new products by adding them to the respective databases
+- Polish the app in general (the looks of the Clothing and Food pages are still very functional and not appealing)
 
 ### Sprint 2
 
