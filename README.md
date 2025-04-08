@@ -285,8 +285,7 @@ What we implemented during this sprint:
 
 What needs improvement:
 
-- Simple search should not only work for exact searches (ex: jacket should return Jacket and not Null). Search with string contains instead of exac
-- t matches
+- Simple search should not only work for exact searches (ex: jacket should return Jacket and not Null). Search with string contains instead of exact matches
 - Have a message pop up when user/business uses wrong login data instead of the default one
 - Implement the logic behind adding new products by adding them to the respective databases
 - Polish the app in general (the looks of the Clothing and Food pages are still very functional and not appealing)
