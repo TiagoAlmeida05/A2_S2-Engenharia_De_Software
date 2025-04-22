@@ -293,7 +293,7 @@ What needs improvement:
 Happiness Meter:
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
-| Filipe | | | | |
+| Filipe |😊|⭐️|⭐️|⭐️|
 | João | | | | |
 | Raul | | | | |
 | Tiago |😊|⭐️|⭐️|😊|
