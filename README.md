@@ -290,15 +290,43 @@ What needs improvement:
 - Implement the logic behind adding new products by adding them to the respective databases
 - Polish the app in general (the looks of the Clothing and Food pages are still very functional and not appealing)
 
+Happiness Meter:
+| | Filipe | João | Raul | Tiago |
+|-| ------ | ---- | ---- | ----- |
+| Filipe | | | | |
+| João | | | | |
+| Raul | | | | |
+| Tiago |😊|⭐️|⭐️|😊|
+
+### Sprint 2
 Planning of Sprint 2:
 
 ![image](https://github.com/user-attachments/assets/ce8f7bc2-5e63-4b82-95bf-1d9be37cd6a9)
 
-### Sprint 2
+| | Filipe | João | Raul | Tiago |
+|-| ------ | ---- | ---- | ----- |
+| Filipe | | | | |
+| João | | | | |
+| Raul | | | | |
+| Tiago | | | | |
 
 ### Sprint 3
 
+| | Filipe | João | Raul | Tiago |
+|-| ------ | ---- | ---- | ----- |
+| Filipe | | | | |
+| João | | | | |
+| Raul | | | | |
+| Tiago | | | | |
+
 ### Sprint 4
+
+| | Filipe | João | Raul | Tiago |
+|-| ------ | ---- | ---- | ----- |
+| Filipe | | | | |
+| João | | | | |
+| Raul | | | | |
+| Tiago | | | | |
 
 ### Final Release
 
