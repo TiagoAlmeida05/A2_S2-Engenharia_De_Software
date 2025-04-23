@@ -294,7 +294,7 @@ Happiness Meter:
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
 | Filipe |😊|⭐️|⭐️|⭐️|
-| João | | | | |
+| João |⭐️|⭐️|⭐️|⭐️|
 | Raul | | | | |
 | Tiago |😊|⭐️|⭐️|😊|
 
