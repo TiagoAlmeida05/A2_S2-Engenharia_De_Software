@@ -339,7 +339,8 @@ What needs improvement:
 
 Sprint backlog:
 
-![image](https://github.com/user-attachments/assets/20e2add4-6d68-4ba8-8c47-ea2ea5dba924)
+![image](https://github.com/user-attachments/assets/ca56ec0a-d35c-4502-a911-05db21a315ee)
+
 
 P4 se achares que alguma coisa aqui está mal depois de fazeres a tua cena muda pls
 
