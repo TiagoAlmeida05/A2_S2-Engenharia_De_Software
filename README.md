@@ -299,18 +299,50 @@ Happiness Meter:
 | Tiago |😊|⭐️|⭐️|😊|
 
 ### Sprint 2
-Planning of Sprint 2:
+Sprint Backlog:
 
 ![image](https://github.com/user-attachments/assets/ce8f7bc2-5e63-4b82-95bf-1d9be37cd6a9)
+
+Sprint Review:
+
+P4 METE AQUI UMA PRINT DE COMO FICOU O SCRUM DPS DE TU FAZERES AS TUAS COISAS
+
+What we implemented during this sprint:
+
+- Fixed a bug where you could login as a business with user credentials
+- A way for businesses to add new items
+- Newly added items are immediately available in the user side of the app
+- A way for businesses to check what products they have for sale
+- You don't have to search for exact matches anymore (only working for clothes)
+- You can search for brands (only working for clothes)
+- Search functionality has been implemented in Food, but not working as well as in Clothes
+- The app looks nicer (At least we think so) //P4 se quiseres muda isto aqui
+- Added stores' location //Isto também
+
+What needs improvement:
+
+- Right now, businesses can only see their for sale products when they add clothes. We want to implement a button so businesses can change between the clothes they have for sale and the food items they have for sale
+- We want the search functionality for food to look like the one that is in clothes right now
+- The trending thing in Clothes still isn't doing anything, we want to get it to work
+- Add filters in Clothes and Food so users can filter by price and expiration date
+- The app still needs visual improvement
+- Add some kind of user profile settings (so you can change name, password etc.)
 
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
 | Filipe | | | | |
-| João | | | | |
+| João |⭐️|⭐️|⭐️|⭐️|
 | Raul | | | | |
 | Tiago | | | | |
 
 ### Sprint 3
+
+Sprint backlog:
+
+![image](https://github.com/user-attachments/assets/20e2add4-6d68-4ba8-8c47-ea2ea5dba924)
+
+P4 se achares que alguma coisa aqui está mal depois de fazeres a tua cena muda pls
+
 
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
