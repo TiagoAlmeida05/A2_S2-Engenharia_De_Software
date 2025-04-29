@@ -305,7 +305,8 @@ Sprint Backlog:
 
 Sprint Review:
 
-P4 METE AQUI UMA PRINT DE COMO FICOU O SCRUM DPS DE TU FAZERES AS TUAS COISAS
+![image](https://github.com/user-attachments/assets/34e9013f-20c9-49a9-a646-74e447d2504f)
+
 
 What we implemented during this sprint:
 
@@ -316,8 +317,8 @@ What we implemented during this sprint:
 - You don't have to search for exact matches anymore (only working for clothes)
 - You can search for brands (only working for clothes)
 - Search functionality has been implemented in Food, but not working as well as in Clothes
-- The app looks nicer (At least we think so) //P4 se quiseres muda isto aqui
-- Added stores' location //Isto também
+- The app looks nicer (At least we think so)
+- Added stores' location
 
 What needs improvement:
 
@@ -330,7 +331,7 @@ What needs improvement:
 
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
-| Filipe | | | | |
+| Filipe |⭐️|⭐️|⭐️|⭐️|
 | João |⭐️|⭐️|⭐️|⭐️|
 | Raul | | | | |
 | Tiago | | | | |
@@ -341,8 +342,6 @@ Sprint backlog:
 
 ![image](https://github.com/user-attachments/assets/ca56ec0a-d35c-4502-a911-05db21a315ee)
 
-
-P4 se achares que alguma coisa aqui está mal depois de fazeres a tua cena muda pls
 
 
 | | Filipe | João | Raul | Tiago |
