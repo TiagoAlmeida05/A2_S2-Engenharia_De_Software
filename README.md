@@ -333,7 +333,7 @@ What needs improvement:
 |-| ------ | ---- | ---- | ----- |
 | Filipe |⭐️|⭐️|⭐️|⭐️|
 | João |⭐️|⭐️|⭐️|⭐️|
-| Raul | | | | |
+| Raul |⭐️|⭐️|⭐️|⭐️|
 | Tiago | | | | |
 
 ### Sprint 3
