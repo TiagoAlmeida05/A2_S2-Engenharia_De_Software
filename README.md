@@ -336,6 +336,14 @@ What needs improvement:
 | Raul |⭐️|⭐️|⭐️|⭐️|
 | Tiago | | | | |
 
+Improvement Videos:
+
+
+https://github.com/user-attachments/assets/9e388732-8c3b-460d-b224-7182e730c4fa
+
+https://github.com/user-attachments/assets/960e0b97-da8d-4004-8746-17a35ab5d933
+
+
 ### Sprint 3
 
 Sprint backlog:
