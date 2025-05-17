@@ -334,7 +334,7 @@ What needs improvement:
 | Filipe |⭐️|⭐️|⭐️|⭐️|
 | João |⭐️|⭐️|⭐️|⭐️|
 | Raul |⭐️|⭐️|⭐️|⭐️|
-| Tiago | | | | |
+| Tiago |⭐️ |⭐️ |⭐️ |⭐️ |
 
 Improvement Videos:
 
