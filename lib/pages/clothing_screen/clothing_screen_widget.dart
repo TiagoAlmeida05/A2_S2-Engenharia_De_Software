@@ -28,6 +28,44 @@ class ClothingScreenWidget extends StatefulWidget {
   State<ClothingScreenWidget> createState() => _ClothingScreenWidgetState();
 }
 
+Future<void> convertClothesPricesToDouble() async {
+  final clothesDocs = await FirebaseFirestore.instance.collection('Clothes').get();
+
+  for (final doc in clothesDocs.docs) {
+    final data = doc.data();
+    final price = data['price'];
+
+    if (price != null && price is int) {
+      final doublePrice = price.toDouble();
+      print('[DEBUG] Converting price ${price} to double: $doublePrice for doc ${doc.id}');
+      
+      await doc.reference.update({
+        'price': doublePrice,
+      });
+    }
+  }
+
+  print('[DEBUG] Done updating all prices to double.');
+}
+
+Future<void> convertAllClothesPricesToDouble() async {
+  final allClothesParents = await FirebaseFirestore.instance.collectionGroup('All_Clothes').get();
+
+  for (final doc in allClothesParents.docs) {
+    final data = doc.data();
+    final price = data['price'];
+
+    if (price != null && price is int) {
+      final doublePrice = price.toDouble();
+      print('[DEBUG] Converting price $price to double: $doublePrice for doc ${doc.id} in ${doc.reference.path}');
+
+      await doc.reference.update({
+        'price': doublePrice,
+      });
+    }
+  }
+}
+
 class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
   late ClothingScreenModel _model;
 
@@ -36,6 +74,8 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
   @override
   void initState() {
   super.initState();
+  convertClothesPricesToDouble();
+  convertAllClothesPricesToDouble();
   _model = createModel(context, () => ClothingScreenModel());
 
   _model.priceOrder ??= 'asc';
