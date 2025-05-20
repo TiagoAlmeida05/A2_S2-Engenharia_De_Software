@@ -1,2 +1,4 @@
-2025/05/20-21:16:53.759 15a35 Creating DB /tmp/flutter_tools.SWGLHV/flutter_tools_chrome_device.NXVCCF/Default/shared_proto_db since it was missing.
-2025/05/20-21:16:53.764 15a35 Reusing MANIFEST /tmp/flutter_tools.SWGLHV/flutter_tools_chrome_device.NXVCCF/Default/shared_proto_db/MANIFEST-000001
+2025/05/20-23:23:37.213 1b1c0 Reusing MANIFEST /tmp/flutter_tools.SZKLTL/flutter_tools_chrome_device.BSQLHM/Default/shared_proto_db/MANIFEST-000001
+2025/05/20-23:23:37.213 1b1c0 Recovering log #4
+2025/05/20-23:23:37.213 1b1c0 Reusing old log /tmp/flutter_tools.SZKLTL/flutter_tools_chrome_device.BSQLHM/Default/shared_proto_db/000004.log 
+2025/05/20-23:23:37.213 1b1c0 Delete type=0 #3

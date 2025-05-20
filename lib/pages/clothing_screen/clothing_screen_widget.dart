@@ -69,20 +69,24 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
+  @override
+void initState() {
   super.initState();
-  convertClothesPricesToDouble();
+
   convertAllClothesPricesToDouble();
+  convertClothesPricesToDouble();
+
   _model = createModel(context, () => ClothingScreenModel());
-
   _model.priceOrder ??= 'asc';
-
-  SchedulerBinding.instance.addPostFrameCallback((_) async {
-    await queryAllClothesRecordOnce();
-  });
 
   _model.textController ??= TextEditingController();
   _model.textFieldFocusNode ??= FocusNode();
+
+
+  // Optionally preload some data
+  SchedulerBinding.instance.addPostFrameCallback((_) async {
+    await queryAllClothesRecordOnce();
+  });
 }
 
   @override
@@ -953,13 +957,11 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
   queryBuilder: (clothesRecord) {
     var query = clothesRecord;
 
-// Filter: expiration ≥ now
 query = query.where(
   'expiration_date',
   isGreaterThanOrEqualTo: getCurrentTimestamp,
 );
 
-// Filter: expiration ≤ user selected date
 if (_model.maxExpirationDate != null) {
   query = query.where(
     'expiration_date',
@@ -967,7 +969,6 @@ if (_model.maxExpirationDate != null) {
   );
 }
 
-// Filter: search query
 if (FFAppState().searchQuery.isNotEmpty) {
   query = query.where(
     'search_keywords',
@@ -975,10 +976,8 @@ if (FFAppState().searchQuery.isNotEmpty) {
   );
 }
 
-// ⚠️ Required: orderBy expiration_date first, since it's used in range filters
 query = query.orderBy('expiration_date');
 
-// Then order by price (descending or ascending)
 query = query.orderBy('price', descending: _model.priceOrder == 'desc');
 
 
@@ -987,7 +986,6 @@ return query;
 ),
 
                             builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
                                 return Center(
                                   child: SizedBox(

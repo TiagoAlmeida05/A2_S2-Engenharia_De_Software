@@ -6,36 +6,54 @@ import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'supermarket_screen_model.dart';
+
 export 'supermarket_screen_model.dart';
 
 class SupermarketScreenWidget extends StatefulWidget {
   const SupermarketScreenWidget({super.key});
 
-  static String routeName = 'SupermarketScreen';
-  static String routePath = '/supermarketScreen';
+  static const String routeName = 'SupermarketScreen';
+  static const String routePath = '/supermarketScreen';
 
   @override
-  State<SupermarketScreenWidget> createState() =>
-      _SupermarketScreenWidgetState();
+  State<SupermarketScreenWidget> createState() => _SupermarketScreenWidgetState();
+}
+
+Future<void> convertPricesToDoubleIfNeeded1() async {
+  final foodDocs = await FirebaseFirestore.instance.collection('Food').get();
+  for (final doc in foodDocs.docs) {
+    final price = doc.data()['price'];
+    if (price is int) {
+      await doc.reference.update({'price': price.toDouble()});
+    }
+  }
+
+  final allFoodDocs = await FirebaseFirestore.instance.collectionGroup('All_Food').get();
+  for (final doc in allFoodDocs.docs) {
+    final price = doc.data()['price'];
+    if (price is int) {
+      await doc.reference.update({'price': price.toDouble()});
+    }
+  }
 }
 
 class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
   late SupermarketScreenModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => SupermarketScreenModel());
+    convertPricesToDoubleIfNeeded1();
 
+    _model.priceOrder ??= 'asc';
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
   }
@@ -43,7 +61,6 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
@@ -52,816 +69,212 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
     context.watch<FFAppState>();
 
     return StreamBuilder<List<UsersRecord>>(
-      stream: queryUsersRecord(
-        singleRecord: true,
-      ),
+      stream: queryUsersRecord(singleRecord: true),
       builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    FlutterFlowTheme.of(context).primary,
-                  ),
-                ),
-              ),
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
-        List<UsersRecord> supermarketScreenUsersRecordList = snapshot.data!;
-        // Return an empty Container when the item does not exist.
-        if (snapshot.data!.isEmpty) {
-          return Container();
-        }
-        final supermarketScreenUsersRecord =
-            supermarketScreenUsersRecordList.isNotEmpty
-                ? supermarketScreenUsersRecordList.first
-                : null;
+
+        final currentUser = snapshot.data!.firstOrNull;
 
         return Scaffold(
           key: scaffoldKey,
-          backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
           appBar: AppBar(
-            backgroundColor: Color(0xFF71C0EA),
-            automaticallyImplyLeading: false,
-            leading: FlutterFlowIconButton(
-              borderRadius: 8.0,
-              buttonSize: 40.0,
-              fillColor: Color(0xFF71C0EA),
-              icon: Icon(
-                Icons.arrow_back,
-                color: FlutterFlowTheme.of(context).info,
-                size: 24.0,
-              ),
-              onPressed: () async {
-                context.safePop();
-              },
-            ),
-            title: Text(
-              'Supermarket Products',
-              style: FlutterFlowTheme.of(context).titleLarge.override(
-                    font: GoogleFonts.interTight(
-                      fontWeight: FontWeight.w600,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleLarge.fontStyle,
-                    ),
-                    color: FlutterFlowTheme.of(context).info,
-                    letterSpacing: 0.0,
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).titleLarge.fontStyle,
-                  ),
-            ),
-            actions: [],
+            title: const Text('Supermarket Products'),
+            leading: BackButton(onPressed: () => context.safePop()),
+            backgroundColor: const Color(0xFF71C0EA),
             centerTitle: true,
-            elevation: 0.0,
           ),
           body: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
-                  width: double.infinity,
-                  child: TextFormField(
-                    controller: _model.textController,
-                    focusNode: _model.textFieldFocusNode,
-                    onChanged: (_) => EasyDebounce.debounce(
-                      '_model.textController',
-                      Duration(milliseconds: 2000),
-                      () async {
-                        FFAppState().searchQuery = '\"\"';
-                        safeSetState(() {});
-                        FFAppState().searchQuery = FFAppState().searchQuery;
-                        safeSetState(() {});
-                      },
+                // Search Field
+                TextFormField(
+                  controller: _model.textController,
+                  focusNode: _model.textFieldFocusNode,
+                  onChanged: (_) => EasyDebounce.debounce(
+                    '_model.textController',
+                    const Duration(milliseconds: 500),
+                    () {
+                      FFAppState().searchQuery = _model.textController.text.toLowerCase().trim();
+                      FFAppState().update(() {});
+                    },
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Search foods...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24.0),
                     ),
-                    autofocus: false,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      hintText: 'Search products...',
-                      hintStyle:
-                          FlutterFlowTheme.of(context).labelMedium.override(
-                                font: GoogleFonts.inter(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).alternate,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      filled: true,
-                      fillColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24.0,
-                      ),
-                    ),
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.inter(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                    cursorColor: FlutterFlowTheme.of(context).primaryText,
-                    validator:
-                        _model.textControllerValidator.asValidator(context),
                   ),
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF71C0EA),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 8.0, 16.0, 8.0),
-                          child: Text(
-                            'All',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context).info,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          borderRadius: BorderRadius.circular(20.0),
-                          border: Border.all(
-                            color: FlutterFlowTheme.of(context).alternate,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 8.0, 16.0, 8.0),
-                          child: Text(
-                            'Fruits',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          borderRadius: BorderRadius.circular(20.0),
-                          border: Border.all(
-                            color: FlutterFlowTheme.of(context).alternate,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 8.0, 16.0, 8.0),
-                          child: Text(
-                            'Vegetables',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          borderRadius: BorderRadius.circular(20.0),
-                          border: Border.all(
-                            color: FlutterFlowTheme.of(context).alternate,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 8.0, 16.0, 8.0),
-                          child: Text(
-                            'Dairy',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          borderRadius: BorderRadius.circular(20.0),
-                          border: Border.all(
-                            color: FlutterFlowTheme.of(context).alternate,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 8.0, 16.0, 8.0),
-                          child: Text(
-                            'Bakery',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                    ]
-                        .divide(SizedBox(width: 12.0))
-                        .addToStart(SizedBox(width: 4.0))
-                        .addToEnd(SizedBox(width: 4.0)),
-                  ),
-                ),
-                StreamBuilder<List<FoodRecord>>(
-                  stream: queryFoodRecord(
-                    queryBuilder: (foodRecord) => foodRecord.where(
-                      'expiration_date',
-                      isGreaterThanOrEqualTo: getCurrentTimestamp,
-                    ),
-                  ),
-                  builder: (context, snapshot) {
-                    // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              FlutterFlowTheme.of(context).primary,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    List<FoodRecord> gridViewFoodRecordList = snapshot.data!;
 
-                    return GridView.builder(
-                      padding: EdgeInsets.zero,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
-                      ),
-                      primary: false,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: gridViewFoodRecordList.length,
-                      itemBuilder: (context, gridViewIndex) {
-                        final gridViewFoodRecord =
-                            gridViewFoodRecordList[gridViewIndex];
-                        return Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: double.infinity,
-                              maxHeight: double.infinity,
-                            ),
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 4.0,
-                                  color: Color(0x1A000000),
-                                  offset: Offset(
-                                    0.0,
-                                    2.0,
-                                  ),
-                                )
-                              ],
-                              borderRadius: BorderRadius.circular(12.0),
-                              shape: BoxShape.rectangle,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                ToggleIcon(
-                                  onPressed: () async {
-                                    final favouritesFoodElement =
-                                        supermarketScreenUsersRecord?.reference;
-                                    final favouritesFoodUpdate =
-                                        gridViewFoodRecord.favouritesFood
-                                                .contains(favouritesFoodElement)
-                                            ? FieldValue.arrayRemove(
-                                                [favouritesFoodElement])
-                                            : FieldValue.arrayUnion(
-                                                [favouritesFoodElement]);
-                                    await gridViewFoodRecord.reference.update({
-                                      ...mapToFirestore(
-                                        {
-                                          'FavouritesFood':
-                                              favouritesFoodUpdate,
-                                        },
-                                      ),
-                                    });
-                                    if (gridViewFoodRecord.favouritesFood
-                                            .contains(
-                                                supermarketScreenUsersRecord
-                                                    ?.reference) ==
-                                        true) {
-                                      await gridViewFoodRecord.reference
-                                          .update({
-                                        ...mapToFirestore(
-                                          {
-                                            'FavouritesFood':
-                                                FieldValue.arrayRemove([
-                                              supermarketScreenUsersRecord
-                                                  ?.reference
-                                            ]),
-                                          },
-                                        ),
-                                      });
-                                    } else {
-                                      await gridViewFoodRecord.reference
-                                          .update({
-                                        ...mapToFirestore(
-                                          {
-                                            'FavouritesFood':
-                                                FieldValue.arrayUnion([
-                                              supermarketScreenUsersRecord
-                                                  ?.reference
-                                            ]),
-                                          },
-                                        ),
-                                      });
-                                    }
-                                  },
-                                  value: gridViewFoodRecord.favouritesFood
-                                      .contains(supermarketScreenUsersRecord
-                                          ?.reference),
-                                  onIcon: Icon(
-                                    Icons.star,
-                                    color: Color(0xFFEAEA1F),
-                                    size: 24.0,
-                                  ),
-                                  offIcon: Icon(
-                                    Icons.star,
-                                    color: Color(0xFFCFCFCF),
-                                    size: 24.0,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(0.0, 0.0),
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                              child: Image.network(
-                                                gridViewFoodRecord.image,
-                                                width: double.infinity,
-                                                height: 140.0,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        gridViewFoodRecord.name,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w900,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w900,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                      RichText(
-                                        textScaler:
-                                            MediaQuery.of(context).textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Price: ',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            ),
-                                            TextSpan(
-                                              text: gridViewFoodRecord.price
-                                                  .toString(),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            ),
-                                            TextSpan(
-                                              text: '€',
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                      RichText(
-                                        textScaler:
-                                            MediaQuery.of(context).textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Quantity: ',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            ),
-                                            TextSpan(
-                                              text: gridViewFoodRecord.quantity
-                                                  .toString(),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            )
-                                          ],
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                      RichText(
-                                        textScaler:
-                                            MediaQuery.of(context).textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Expires: ',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            ),
-                                            TextSpan(
-                                              text: dateTimeFormat(
-                                                  "d/M/y",
-                                                  gridViewFoodRecord
-                                                      .expirationDate!),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                            )
-                                          ],
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                const SizedBox(height: 12.0),
+
+                // Filters
+                Row(
+  children: [
+    Expanded(
+      child: DropdownButtonFormField<String>(
+        value: _model.priceOrder,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          labelText: 'Sort by',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+        ),
+        icon: const Icon(Icons.arrow_drop_down),
+        items: const [
+          DropdownMenuItem(
+            value: 'asc',
+            child: Text('Price: Low to High'),
+          ),
+          DropdownMenuItem(
+            value: 'desc',
+            child: Text('Price: High to Low'),
+          ),
+        ],
+        onChanged: (val) {
+          setState(() {
+            _model.priceOrder = val!;
+          });
+        },
+      ),
+    ),
+    const SizedBox(width: 12.0),
+    TextButton.icon(
+      icon: const Icon(Icons.date_range),
+      label: Text(
+        _model.maxExpirationDate != null
+            ? dateTimeFormat('yMMMd', _model.maxExpirationDate!)
+            : 'Max Expiration',
+      ),
+      onPressed: () async {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: _model.maxExpirationDate ?? DateTime.now(),
+          firstDate: DateTime.now(),
+          lastDate: DateTime(2100),
+        );
+        if (picked != null) {
+          setState(() => _model.maxExpirationDate = picked);
+        }
+      },
+    ),
+  ],
+),
+
+
+                const SizedBox(height: 12.0),
+
+                // Product List
+                Expanded(
+                  child: StreamBuilder<List<FoodRecord>>(
+                    stream: queryFoodRecord(
+                      queryBuilder: (food) {
+                        var query = food.where(
+                          'expiration_date',
+                          isGreaterThanOrEqualTo: getCurrentTimestamp,
                         );
+
+                        if (_model.maxExpirationDate != null) {
+                          query = query.where(
+                            'expiration_date',
+                            isLessThanOrEqualTo: Timestamp.fromDate(_model.maxExpirationDate!),
+                          );
+                        }
+
+                        if (FFAppState().searchQuery.isNotEmpty) {
+                          query = query.where(
+                            'search_keywords',
+                            arrayContains: FFAppState().searchQuery,
+                          );
+                        }
+
+                        return query
+                            .orderBy('expiration_date')
+                            .orderBy('price', descending: _model.priceOrder == 'desc');
                       },
-                    );
-                  },
+                    ),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      var items = snapshot.data!;
+                      items.sort((a, b) => a.price.compareTo(b.price));
+                      if (_model.priceOrder == 'desc') {
+                        items = items.reversed.toList();
+                      }
+
+                      return ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Card(
+  margin: const EdgeInsets.symmetric(vertical: 8.0),
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Image.network(
+            item.image,
+            width: 64,
+            height: 64,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 64),
+          ),
+        ),
+        const SizedBox(width: 12.0),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.name,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 4.0),
+              Text(
+                '${item.price.toStringAsFixed(2)} € • Expires ${dateTimeFormat("d/M/y", item.expirationDate!)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+        ToggleIcon(
+          value: item.favouritesFood.contains(currentUser?.reference),
+          onIcon: const Icon(Icons.star, color: Colors.yellow),
+          offIcon: const Icon(Icons.star_border),
+          onPressed: () async {
+            final ref = currentUser?.reference;
+            if (ref == null) return;
+
+            final update = item.favouritesFood.contains(ref)
+                ? FieldValue.arrayRemove([ref])
+                : FieldValue.arrayUnion([ref]);
+
+            await item.reference.update({'FavouritesFood': update});
+          },
+        ),
+      ],
+    ),
+  ),
+);
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ].divide(SizedBox(height: 16.0)),
+              ],
             ),
           ),
         );

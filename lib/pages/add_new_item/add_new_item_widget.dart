@@ -720,34 +720,26 @@ class _AddNewItemWidgetState extends State<AddNewItemWidget> {
                             ),
                             FFButtonWidget(
                               onPressed: () async {
-                                await FoodRecord.collection.doc().set({
-                                  ...createFoodRecordData(
-                                    name:
-                                        _model.businessNameTextController1.text,
-                                    price: double.tryParse(
-                                        _model.textController2.text),
-                                    quantity: int.tryParse(_model
-                                        .businessNameTextController2.text),
-                                    createdBy: currentUserEmail,
-                                    expirationDate:
-                                        _model.calendarSelectedDay?.end,
-                                    image: _model.uploadedFileUrl,
-                                  ),
-                                  ...mapToFirestore(
-                                    {
-                                      'search_keywords':
-                                          functions.newCustomFunction(
-                                              _model.businessNameTextController1
-                                                  .text,
-                                              _model.businessNameTextController1
-                                                  .text),
-                                    },
-                                  ),
-                                });
+  final keywords = functions.newCustomFunction(
+    _model.businessNameTextController1.text,
+    _model.businessNameTextController1.text,
+  );
 
-                                context.pushNamed(
-                                    BusinessItemPageWidget.routeName);
-                              },
+  await FoodRecord.collection.doc().set({
+    ...createFoodRecordData(
+      name: _model.businessNameTextController1.text,
+      price: double.tryParse(_model.textController2.text),
+      quantity: int.tryParse(_model.businessNameTextController2.text),
+      createdBy: currentUserEmail,
+      expirationDate: _model.calendarSelectedDay?.end,
+      image: _model.uploadedFileUrl,
+    ),
+    'search_keywords': keywords,
+  });
+
+  context.pushNamed(BusinessItemPageWidget.routeName);
+},
+
                               text: 'Add Item',
                               options: FFButtonOptions(
                                 width: double.infinity,
