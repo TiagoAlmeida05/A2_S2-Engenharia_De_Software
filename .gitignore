@@ -1,0 +1,39 @@
+# Flutter/Dart build and tooling
+.dart_tool/
+build/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+pubspec.lock
+
+# iOS
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/.symlinks/
+ios/Runner.xcworkspace/
+
+# Android
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/build/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# Others
+*.log
+*.tmp
+*.swp
+*.DS_Store
