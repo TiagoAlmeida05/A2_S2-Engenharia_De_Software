@@ -37,7 +37,6 @@ Future<void> convertClothesPricesToDouble() async {
 
     if (price != null && price is int) {
       final doublePrice = price.toDouble();
-      print('[DEBUG] Converting price ${price} to double: $doublePrice for doc ${doc.id}');
       
       await doc.reference.update({
         'price': doublePrice,
@@ -45,7 +44,6 @@ Future<void> convertClothesPricesToDouble() async {
     }
   }
 
-  print('[DEBUG] Done updating all prices to double.');
 }
 
 Future<void> convertAllClothesPricesToDouble() async {
@@ -57,7 +55,6 @@ Future<void> convertAllClothesPricesToDouble() async {
 
     if (price != null && price is int) {
       final doublePrice = price.toDouble();
-      print('[DEBUG] Converting price $price to double: $doublePrice for doc ${doc.id} in ${doc.reference.path}');
 
       await doc.reference.update({
         'price': doublePrice,
@@ -122,6 +119,7 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
           );
         }
         List<UsersRecord> clothingScreenUsersRecordList = snapshot.data!;
+
         // Return an empty Container when the item does not exist.
         if (snapshot.data!.isEmpty) {
           return Container();
@@ -954,7 +952,6 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
                             stream: queryClothesRecord(
   queryBuilder: (clothesRecord) {
     var query = clothesRecord;
-    print('[DEBUG] Querying for keyword: ${FFAppState().searchQuery}');
 
 // Filter: expiration ≥ now
 query = query.where(
@@ -1004,13 +1001,15 @@ return query;
                                   ),
                                 );
                               }
-                              List<ClothesRecord> listViewClothesRecordList =
-                                  snapshot.data!;
+                              List<ClothesRecord> listViewClothesRecordList = snapshot.data!;
 
-                                print('[DEBUG] Results:');
-                                for (final doc in snapshot.data!) {
-                                print('[DEBUG] ${doc.name} - price: ${doc.price.runtimeType} - expiration: ${doc.expirationDate.runtimeType}');
-                              }    
+                                listViewClothesRecordList.sort((a, b) => a.price.compareTo(b.price));
+
+                              if (_model.priceOrder == 'desc') {
+                                  listViewClothesRecordList = listViewClothesRecordList.reversed.toList();
+                              }
+
+
 
                               return ListView.builder(
                                 padding: EdgeInsets.zero,
