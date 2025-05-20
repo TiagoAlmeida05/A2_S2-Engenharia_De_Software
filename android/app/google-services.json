@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "322514767622",
+    "project_id": "shelfsaver-e6540",
+    "storage_bucket": "shelfsaver-e6540.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322514767622:android:3924f11e9112d86b0e1887",
+        "android_client_info": {
+          "package_name": "com.mycompany.shelfsaver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzYFx7JH2ZzGFmB-TDTbyOWjIFJEjBWhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

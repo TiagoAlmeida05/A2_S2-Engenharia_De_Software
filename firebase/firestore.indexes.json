@@ -1,0 +1,46 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Clothes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "expiration_date",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "search_keywords",
+          "arrayConfig": "CONTAINS"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Food",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "created_by",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiration_date",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Clothes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "created_by",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiration_date",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ]
+}
