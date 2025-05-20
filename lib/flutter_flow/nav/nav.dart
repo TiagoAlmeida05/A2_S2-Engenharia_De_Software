@@ -218,6 +218,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier, [Widget? entryPage]) =>
               'zipCode',
               ParamType.String,
             ),
+            seller: params.getParam('seller', ParamType.String),
           ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
