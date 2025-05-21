@@ -29,3 +29,4 @@ export '/pages/supermarket_screen_copy/supermarket_screen_copy_widget.dart'
 export '/pages/business_item_page_copy/business_item_page_copy_widget.dart'
     show BusinessItemPageCopyWidget;
 export '/pages/item_profile/item_profile_widget.dart' show ItemProfileWidget;
+export '/pages/item_profile_copy/item_profile_widget_copy.dart' show ItemProfileWidgetCopy;

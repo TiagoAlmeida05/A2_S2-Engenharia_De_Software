@@ -164,6 +164,7 @@ class _ClothesItemCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87
                         ),
                       ),
                       const SizedBox(height: 8),

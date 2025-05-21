@@ -220,7 +220,54 @@ GoRouter createRouter(AppStateNotifier appStateNotifier, [Widget? entryPage]) =>
             ),
             seller: params.getParam('seller', ParamType.String),
           ),
-        )
+        ),
+        FFRoute(
+            name: ItemProfileWidgetCopy.routeName,
+            path: ItemProfileWidgetCopy.routePath,
+            builder: (context, params) => ItemProfileWidgetCopy(
+              name: params.getParam(
+                'name',
+                ParamType.String,
+              ),
+              image: params.getParam(
+                'image',
+                ParamType.String,
+              ),
+              price: params.getParam(
+                'price',
+                ParamType.double,
+              ),
+              brand: params.getParam(
+                'brand',
+                ParamType.String,
+              ),
+              quantity: params.getParam(
+                'quantity',
+                ParamType.int,
+              ),
+              endsBy: params.getParam(
+                'endsBy',
+                ParamType.DateTime,
+              ),
+              shopsName: params.getParam(
+                'shopsName',
+                ParamType.String,
+              ),
+              city: params.getParam(
+                'city',
+                ParamType.String,
+              ),
+              street: params.getParam(
+                'street',
+                ParamType.String,
+              ),
+              zipCode: params.getParam(
+                'zipCode',
+                ParamType.String,
+              ),
+              seller: params.getParam('seller', ParamType.String),
+            ),
+          )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
 

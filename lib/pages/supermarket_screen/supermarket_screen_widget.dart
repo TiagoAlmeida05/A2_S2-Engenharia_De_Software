@@ -216,56 +216,70 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final item = items[index];
-                          return Card(
-  margin: const EdgeInsets.symmetric(vertical: 8.0),
-  child: Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.network(
-            item.image,
-            width: 64,
-            height: 64,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 64),
+                          return InkWell(
+  onTap: () => context.pushNamed(
+  'ItemProfileCopy',
+  queryParameters: {
+    'name': serializeParam(item.name, ParamType.String),
+    'image': serializeParam(item.image, ParamType.String),
+    'price': serializeParam(item.price, ParamType.double),
+    'quantity': serializeParam(item.quantity, ParamType.int),
+    'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
+    'seller': serializeParam(item.createdBy, ParamType.String),
+  }.withoutNulls,
+),
+  child: Card(
+    margin: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              item.image,
+              width: 64,
+              height: 64,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.broken_image, size: 64),
+            ),
           ),
-        ),
-        const SizedBox(width: 12.0),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 4.0),
-              Text(
-                '${item.price.toStringAsFixed(2)} € • Expires ${dateTimeFormat("d/M/y", item.expirationDate!)}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+          const SizedBox(width: 12.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  '${item.price.toStringAsFixed(2)} € • Expires ${dateTimeFormat("d/M/y", item.expirationDate!)}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
           ),
-        ),
-        ToggleIcon(
-          value: item.favouritesFood.contains(currentUser?.reference),
-          onIcon: const Icon(Icons.star, color: Colors.yellow),
-          offIcon: const Icon(Icons.star_border),
-          onPressed: () async {
-            final ref = currentUser?.reference;
-            if (ref == null) return;
+          ToggleIcon(
+            value: item.favouritesFood.contains(currentUser?.reference),
+            onIcon: const Icon(Icons.star, color: Colors.yellow),
+            offIcon: const Icon(Icons.star_border),
+            onPressed: () async {
+              final ref = currentUser?.reference;
+              if (ref == null) return;
 
-            final update = item.favouritesFood.contains(ref)
-                ? FieldValue.arrayRemove([ref])
-                : FieldValue.arrayUnion([ref]);
+              final update = item.favouritesFood.contains(ref)
+                  ? FieldValue.arrayRemove([ref])
+                  : FieldValue.arrayUnion([ref]);
 
-            await item.reference.update({'FavouritesFood': update});
-          },
-        ),
-      ],
+              await item.reference.update({'FavouritesFood': update});
+            },
+          ),
+        ],
+      ),
     ),
   ),
 );
