@@ -1,1383 +1,362 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
-import '/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'clothing_screen_model.dart';
-export 'clothing_screen_model.dart';
 
 class ClothingScreenWidget extends StatefulWidget {
-  ClothingScreenWidget({super.key});
+  const ClothingScreenWidget({super.key});
 
   static String routeName = 'ClothingScreen';
   static String routePath = '/clothingScreen';
-
 
   @override
   State<ClothingScreenWidget> createState() => _ClothingScreenWidgetState();
 }
 
-Future<void> convertClothesPricesToDouble() async {
-  final clothesDocs = await FirebaseFirestore.instance.collection('Clothes').get();
-
-  for (final doc in clothesDocs.docs) {
-    final data = doc.data();
-    final price = data['price'];
-
-    if (price != null && price is int) {
-      final doublePrice = price.toDouble();
-      
-      await doc.reference.update({
-        'price': doublePrice,
-      });
-    }
-  }
-
-}
-
-Future<void> convertAllClothesPricesToDouble() async {
-  final allClothesParents = await FirebaseFirestore.instance.collectionGroup('All_Clothes').get();
-
-  for (final doc in allClothesParents.docs) {
-    final data = doc.data();
-    final price = data['price'];
-
-    if (price != null && price is int) {
-      final doublePrice = price.toDouble();
-
-      await doc.reference.update({
-        'price': doublePrice,
-      });
-    }
-  }
-}
-
 class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
-  late ClothingScreenModel _model;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  late TextEditingController _searchController;
+  late FocusNode _searchFocusNode;
+  DateTime? _maxExpirationDate;
+  String _priceOrder = 'asc';
 
   @override
-  @override
-void initState() {
-  super.initState();
-
-  convertAllClothesPricesToDouble();
-  convertClothesPricesToDouble();
-
-  _model = createModel(context, () => ClothingScreenModel());
-  _model.priceOrder ??= 'asc';
-
-  _model.textController ??= TextEditingController();
-  _model.textFieldFocusNode ??= FocusNode();
-
-
-  // Optionally preload some data
-  SchedulerBinding.instance.addPostFrameCallback((_) async {
-    await queryAllClothesRecordOnce();
-  });
-}
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _searchFocusNode = FocusNode();
+  }
 
   @override
   void dispose() {
-    _model.dispose();
-
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
-    return StreamBuilder<List<UsersRecord>>(
-      stream: queryUsersRecord(
-        singleRecord: true,
+    return Scaffold(
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF71C0EA),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => context.pop(),
+        ),
+        title: Text(
+          'Clothing',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                fontFamily: 'Inter',
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+        centerTitle: true,
+        elevation: 0,
       ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    FlutterFlowTheme.of(context).primary,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                decoration: InputDecoration(
+                  hintText: 'Search clothing...',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                onChanged: (value) => EasyDebounce.debounce(
+                  '_searchController',
+                  const Duration(milliseconds: 500),
+                  () => setState(() {}),
                 ),
               ),
             ),
-          );
-        }
-        List<UsersRecord> clothingScreenUsersRecordList = snapshot.data!;
 
-        // Return an empty Container when the item does not exist.
-        if (snapshot.data!.isEmpty) {
-          return Container();
-        }
-        final clothingScreenUsersRecord =
-            clothingScreenUsersRecordList.isNotEmpty
-                ? clothingScreenUsersRecordList.first
-                : null;
-
-        return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Scaffold(
-            key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            appBar: AppBar(
-              backgroundColor: Color(0xFF71C0EA),
-              automaticallyImplyLeading: false,
-              leading: FlutterFlowIconButton(
-                borderRadius: 8.0,
-                buttonSize: 40.0,
-                fillColor: Color(0xFF71C0EA),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 24.0,
-                ),
-                onPressed: () async {
-                  context.safePop();
-                },
-              ),
-              title: Text(
-                'Clothes',
-                style: FlutterFlowTheme.of(context).headlineSmall.override(
-                      font: GoogleFonts.interTight(
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FlutterFlowTheme.of(context)
-                            .headlineSmall
-                            .fontStyle,
-                      ),
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).headlineSmall.fontStyle,
-                    ),
-              ),
-              actions: [],
-              centerTitle: true,
-              elevation: 0.0,
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
+            // Filter Controls
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
                 children: [
-                  Container(
-                    width: 300.0,
-                    child: TextFormField(
-                      controller: _model.textController,
-                      focusNode: _model.textFieldFocusNode,
-                      onChanged: (_) => EasyDebounce.debounce(
-  '_model.textController',
-  Duration(milliseconds: 500),
-  () async {
-    FFAppState().searchQuery = _model.textController.text.toLowerCase().trim();
-    FFAppState().update(() {});
-  },
-),
-                      autofocus: false,
-                      obscureText: false,
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _priceOrder,
                       decoration: InputDecoration(
-                        isDense: true,
-                        labelStyle:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                        hintText: 'TextField',
-                        hintStyle:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).error,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).error,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
                         filled: true,
-                        fillColor:
-                            FlutterFlowTheme.of(context).secondaryBackground,
+                        fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                       ),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                      cursorColor: FlutterFlowTheme.of(context).primaryText,
-                      validator:
-                          _model.textControllerValidator.asValidator(context),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'asc',
+                          child: Text('Price: Low to High'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'desc',
+                          child: Text('Price: High to Low'),
+                        ),
+                      ],
+                      onChanged: (value) => setState(() => _priceOrder = value!),
                     ),
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _maxExpirationDate ?? DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null) {
+                          setState(() => _maxExpirationDate = picked);
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 16),
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Row(
-                          mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Trending Stores',
-                              style: FlutterFlowTheme.of(context)
-                                  .titleLarge
-                                  .override(
-                                    font: GoogleFonts.interTight(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleLarge
-                                        .fontStyle,
-                                  ),
+                              _maxExpirationDate != null
+                                  ? dateTimeFormat('MMM d', _maxExpirationDate!)
+                                  : 'Max date',
+                              style: FlutterFlowTheme.of(context).bodyMedium,
                             ),
-                            Text(
-                              'View All',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                            ),
+                            const Icon(Icons.calendar_today, size: 18),
                           ],
                         ),
                       ),
-                      Container(
-                        height: 160.0,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          child: ListView(
-                            padding: EdgeInsets.zero,
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Container(
-                                    width: 120.0,
-                                    height: 120.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: Image.network(
-                                          '\"500x500?clothing store\"',
-                                        ).image,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 4.0,
-                                          color: Color(0x1A000000),
-                                          offset: Offset(
-                                            0.0,
-                                            2.0,
-                                          ),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: Image.asset(
-                                            'assets/images/Como_Reg_Suit_Pants-Pants-LDM510070-100100-Black.webp',
-                                          ).image,
-                                        ),
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Color(0x80000000)
-                                          ],
-                                          stops: [0.0, 1.0],
-                                          begin:
-                                              AlignmentDirectional(0.0, -1.0),
-                                          end: AlignmentDirectional(0, 1.0),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 8.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              width: 50.0,
-                                              height: 31.71,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                              child: Align(
-                                                alignment: AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    '30% OFF',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodySmall
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .info,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodySmall
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Clothes',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ].divide(SizedBox(height: 8.0)),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Container(
-                                    width: 120.0,
-                                    height: 120.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: Image.network(
-                                          '\"500x500?zara store\"',
-                                        ).image,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 4.0,
-                                          color: Color(0x1A000000),
-                                          offset: Offset(
-                                            0.0,
-                                            2.0,
-                                          ),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Color(0x80000000)
-                                          ],
-                                          stops: [0.0, 1.0],
-                                          begin:
-                                              AlignmentDirectional(0.0, -1.0),
-                                          end: AlignmentDirectional(0, 1.0),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 8.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Zara',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ].divide(SizedBox(height: 8.0)),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Container(
-                                    width: 120.0,
-                                    height: 120.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: Image.network(
-                                          '\"500x500?mango store\"',
-                                        ).image,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 4.0,
-                                          color: Color(0x1A000000),
-                                          offset: Offset(
-                                            0.0,
-                                            2.0,
-                                          ),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Color(0x80000000)
-                                          ],
-                                          stops: [0.0, 1.0],
-                                          begin:
-                                              AlignmentDirectional(0.0, -1.0),
-                                          end: AlignmentDirectional(0, 1.0),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 8.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              width: 50.0,
-                                              height: 24.0,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                              child: Align(
-                                                alignment: AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    '40% OFF',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodySmall
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .info,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodySmall
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Mango',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ].divide(SizedBox(height: 8.0)),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Container(
-                                    width: 120.0,
-                                    height: 120.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: Image.network(
-                                          '\"500x500?uniqlo store\"',
-                                        ).image,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 4.0,
-                                          color: Color(0x1A000000),
-                                          offset: Offset(
-                                            0.0,
-                                            2.0,
-                                          ),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Color(0x80000000)
-                                          ],
-                                          stops: [0.0, 1.0],
-                                          begin:
-                                              AlignmentDirectional(0.0, -1.0),
-                                          end: AlignmentDirectional(0, 1.0),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 8.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              width: 50.0,
-                                              height: 24.0,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiary,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                              child: Align(
-                                                alignment: AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    '20% OFF',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodySmall
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .info,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodySmall
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Uniqlo',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ].divide(SizedBox(height: 8.0)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ].divide(SizedBox(height: 12.0)),
-                  ),
-                  Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  child: Container(
-    width: double.infinity,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(0.0),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-  decoration: BoxDecoration(
-    color: FlutterFlowTheme.of(context).secondaryBackground,
-    borderRadius: BorderRadius.circular(8.0),
-    border: Border.all(
-      color: FlutterFlowTheme.of(context).primary.withOpacity(0.2),
-      width: 1.0,
-    ),
-  ),
-  child: DropdownButtonHideUnderline(
-    child: DropdownButton<String>(
-      value: _model.priceOrder,
-      icon: const Icon(Icons.keyboard_arrow_down_rounded),
-      elevation: 2,
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            fontFamily: 'Inter',
-            fontSize: 14.0,
-            fontWeight: FontWeight.w500,
-          ),
-      dropdownColor: FlutterFlowTheme.of(context).secondaryBackground,
-      items: const [
-        DropdownMenuItem(
-          value: 'asc',
-          child: Text('Price: Low to High'),
-        ),
-        DropdownMenuItem(
-          value: 'desc',
-          child: Text('Price: High to Low'),
-        ),
-      ],
-      onChanged: (val) {
-        setState(() {
-      _model.priceOrder = val!;
-  });
-      },
-    ),
-  ),
-),
-        TextButton.icon(
-          icon: Icon(Icons.date_range),
-          label: Text(_model.maxExpirationDate != null
-              ? dateTimeFormat('yMMMd', _model.maxExpirationDate!)
-              : 'Max Expiration'),
-          onPressed: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: _model.maxExpirationDate ?? DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2100),
-            );
-            if (picked != null) {
-              setState(() {
-                _model.maxExpirationDate = picked;
-              });
-            }
-          },
-        ),
-      ],
-    ),
-  ),
-),
-
-                  SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Ending Soon',
-                                style: FlutterFlowTheme.of(context)
-                                    .titleLarge
-                                    .override(
-                                      font: GoogleFonts.interTight(
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .titleLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .fontStyle,
-                                    ),
-                              ),
-                              Text(
-                                'View All',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      color:
-                                          FlutterFlowTheme.of(context).primary,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          child: StreamBuilder<List<ClothesRecord>>(
-                            stream: queryClothesRecord(
-  queryBuilder: (clothesRecord) {
-    var query = clothesRecord;
-
-query = query.where(
-  'expiration_date',
-  isGreaterThanOrEqualTo: getCurrentTimestamp,
-);
-
-if (_model.maxExpirationDate != null) {
-  query = query.where(
-    'expiration_date',
-    isLessThanOrEqualTo: Timestamp.fromDate(_model.maxExpirationDate!),
-  );
-}
-
-if (FFAppState().searchQuery.isNotEmpty) {
-  query = query.where(
-    'search_keywords',
-    arrayContains: FFAppState().searchQuery,
-  );
-}
-
-query = query.orderBy('expiration_date');
-
-query = query.orderBy('price', descending: _model.priceOrder == 'desc');
-
-
-return query;
-  },
-),
-
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        FlutterFlowTheme.of(context).primary,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              List<ClothesRecord> listViewClothesRecordList = snapshot.data!;
-
-                                listViewClothesRecordList.sort((a, b) => a.price.compareTo(b.price));
-
-                              if (_model.priceOrder == 'desc') {
-                                  listViewClothesRecordList = listViewClothesRecordList.reversed.toList();
-                              }
-
-
-
-                              return ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                itemCount: listViewClothesRecordList.length,
-                                itemBuilder: (context, listViewIndex) {
-                                  final listViewClothesRecord =
-                                      listViewClothesRecordList[listViewIndex];
-                                  return InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      context.pushNamed(
-                                        ItemProfileWidget.routeName,
-                                        queryParameters: {
-                                          'name': serializeParam(
-                                            listViewClothesRecord.name,
-                                            ParamType.String,
-                                          ),
-                                          'image': serializeParam(
-                                            listViewClothesRecord.image,
-                                            ParamType.String,
-                                          ),
-                                          'price': serializeParam(
-                                            listViewClothesRecord.price,
-                                            ParamType.double,
-                                          ),
-                                          'brand': serializeParam(
-                                            listViewClothesRecord.brand,
-                                            ParamType.String,
-                                          ),
-                                          'quantity': serializeParam(
-                                            listViewClothesRecord.quantity,
-                                            ParamType.int,
-                                          ),
-                                          'endsBy': serializeParam(
-                                            listViewClothesRecord
-                                                .expirationDate,
-                                            ParamType.DateTime,
-                                          ),
-                                          'shopsName': serializeParam(
-                                            '',
-                                            ParamType.String,
-                                          ),
-                                          'city': serializeParam(
-                                            '',
-                                            ParamType.String,
-                                          ),
-                                          'street': serializeParam(
-                                            '',
-                                            ParamType.String,
-                                          ),
-                                          'zipCode': serializeParam(
-                                            '',
-                                            ParamType.String,
-                                          ),
-                                        }.withoutNulls,
-                                      );
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        ToggleIcon(
-                                          onPressed: () async {
-                                            final favouriteClothesElement =
-                                                clothingScreenUsersRecord
-                                                    ?.reference;
-                                            final favouriteClothesUpdate =
-                                                listViewClothesRecord
-                                                        .favouriteClothes
-                                                        .contains(
-                                                            favouriteClothesElement)
-                                                    ? FieldValue.arrayRemove([
-                                                        favouriteClothesElement
-                                                      ])
-                                                    : FieldValue.arrayUnion([
-                                                        favouriteClothesElement
-                                                      ]);
-                                            await listViewClothesRecord
-                                                .reference
-                                                .update({
-                                              ...mapToFirestore(
-                                                {
-                                                  'FavouriteClothes':
-                                                      favouriteClothesUpdate,
-                                                },
-                                              ),
-                                            });
-                                            if (listViewClothesRecord
-                                                    .favouriteClothes
-                                                    .contains(
-                                                        clothingScreenUsersRecord
-                                                            ?.reference) ==
-                                                true) {
-                                              await listViewClothesRecord
-                                                  .reference
-                                                  .update({
-                                                ...mapToFirestore(
-                                                  {
-                                                    'FavouriteClothes':
-                                                        FieldValue.arrayRemove([
-                                                      clothingScreenUsersRecord
-                                                          ?.reference
-                                                    ]),
-                                                  },
-                                                ),
-                                              });
-                                            } else {
-                                              await listViewClothesRecord
-                                                  .reference
-                                                  .update({
-                                                ...mapToFirestore(
-                                                  {
-                                                    'FavouriteClothes':
-                                                        FieldValue.arrayUnion([
-                                                      clothingScreenUsersRecord
-                                                          ?.reference
-                                                    ]),
-                                                  },
-                                                ),
-                                              });
-                                            }
-                                          },
-                                          value: listViewClothesRecord
-                                              .favouriteClothes
-                                              .contains(
-                                                  clothingScreenUsersRecord
-                                                      ?.reference),
-                                          onIcon: Icon(
-                                            Icons.star,
-                                            color: Color(0xFFEAEA1F),
-                                            size: 30.0,
-                                          ),
-                                          offIcon: Icon(
-                                            Icons.star,
-                                            color: Color(0xFFCFCFCF),
-                                            size: 30.0,
-                                          ),
-                                        ),
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                            child: Image.network(
-    listViewClothesRecord.image.isNotEmpty
-        ? listViewClothesRecord.image
-        : 'https://via.placeholder.com/200',
-    width: 200,
-    height: 200,
-    fit: BoxFit.cover,
-    errorBuilder: (context, error, stackTrace) {
-      return Container(
-        width: 200,
-        height: 200,
-        color: Colors.grey[300],
-        child: Icon(Icons.image_not_supported, size: 50),
-      );
-    },
-  ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 16.0, 0.0, 0.0),
-                                          child: Text(
-                                            listViewClothesRecord.name,
-                                            style: FlutterFlowTheme.of(context)
-                                                .headlineMedium
-                                                .override(
-                                                  font: GoogleFonts.outfit(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .headlineMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                  fontSize: 24.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 4.0, 0.0, 0.0),
-                                          child: Text(
-                                            listViewClothesRecord.price
-                                                .toString(),
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts
-                                                      .plusJakartaSans(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  fontSize: 14.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Align(
-                                              alignment: AlignmentDirectional(
-                                                  -1.0, 0.0),
-                                              child: Text(
-                                                listViewClothesRecord.brand,
-                                                style: FlutterFlowTheme.of(
-                                                        context)
-                                                    .bodyMedium
-                                                    .override(
-                                                      font: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .primaryText,
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: AlignmentDirectional(
-                                                  1.0, 0.0),
-                                              child: Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        300.0, 0.0, 0.0, 0.0),
-                                                child: Text(
-                                                  valueOrDefault<String>(
-                                                    listViewClothesRecord
-                                                        .expirationDate
-                                                        ?.toString(),
-                                                    '0',
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ].divide(SizedBox(height: 12.0)),
                     ),
                   ),
-                  FFButtonWidget(
-                    onPressed: () async {
-                      context.pushNamed(UserProfileSettingsWidget.routeName);
-                    },
-                    text: 'Profile',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.interTight(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 0.0,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ]
-                    .divide(SizedBox(height: 24.0))
-                    .addToStart(SizedBox(height: 16.0))
-                    .addToEnd(SizedBox(height: 24.0)),
+                ],
               ),
             ),
+
+            // Content
+            Expanded(
+              child: StreamBuilder<List<ClothesRecord>>(
+                stream: queryClothesRecord(
+                  queryBuilder: (clothesRecord) {
+                    // First filter - items not expired
+                    var query = clothesRecord.where(
+                      'expiration_date',
+                      isGreaterThanOrEqualTo: getCurrentTimestamp,
+                    );
+
+                    // Second filter - max expiration date if set
+                    if (_maxExpirationDate != null) {
+                      query = query.where(
+                        'expiration_date',
+                        isLessThanOrEqualTo: Timestamp.fromDate(_maxExpirationDate!),
+                      );
+                    }
+
+                    // Third filter - search keywords if entered
+                    if (_searchController.text.isNotEmpty) {
+                      query = query.where(
+                        'search_keywords',
+                        arrayContains: _searchController.text.toLowerCase(),
+                      );
+                    }
+
+                    // Sorting - by price
+                    return query.orderBy('price', descending: _priceOrder == 'desc');
+                  },
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_off, size: 48, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No items found',
+                            style: FlutterFlowTheme.of(context).titleLarge,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  final clothes = snapshot.data!;
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: clothes.length,
+                    itemBuilder: (context, index) {
+                      final item = clothes[index];
+                      return _ClothingItemCard(item: item);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ClothingItemCard extends StatelessWidget {
+  final ClothesRecord item;
+
+  const _ClothingItemCard({required this.item});
+  
+  get currentUserReference => null;
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUserRef = currentUserReference;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => context.pushNamed(
+          'ItemProfile',
+          queryParameters: {
+            'name': serializeParam(item.name, ParamType.String),
+            'image': serializeParam(item.image, ParamType.String),
+            'price': serializeParam(item.price, ParamType.double),
+            'brand': serializeParam(item.brand, ParamType.String),
+            'quantity': serializeParam(item.quantity, ParamType.int),
+            'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
+          }.withoutNulls,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.grey[200],
+                  child: item.image.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: item.image,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.image_not_supported,
+                            size: 40,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.image_not_supported,
+                          size: 40,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      style: FlutterFlowTheme.of(context).titleLarge,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.brand,
+                      style: FlutterFlowTheme.of(context).bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          '${item.price.toStringAsFixed(2)}€',
+                          style: FlutterFlowTheme.of(context)
+                              .titleMedium
+                              .override(color: const Color(0xFF71C0EA)),
+                        ),
+                        const Spacer(),
+                        if (currentUserRef != null)
+                          IconButton(
+                            icon: Icon(
+                              item.favouriteClothes.contains(currentUserRef)
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: item.favouriteClothes.contains(currentUserRef)
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                            onPressed: () async {
+                              await item.reference.update({
+                                'favourite_clothes': item.favouriteClothes
+                                        .contains(currentUserRef)
+                                    ? FieldValue.arrayRemove([currentUserRef])
+                                    : FieldValue.arrayUnion([currentUserRef]),
+                              });
+                            },
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer, size: 16),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Expires ${dateTimeFormat('MMM d', item.expirationDate)}',
+                          style: FlutterFlowTheme.of(context).bodySmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
