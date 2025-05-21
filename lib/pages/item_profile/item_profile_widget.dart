@@ -108,13 +108,6 @@ class _ItemProfileWidgetState extends State<ItemProfileWidget> {
 
                   const SizedBox(height: 20),
 
-                  // Shop Info
-                  _buildInfoCard(
-                    children: [
-                      _buildDetailRow('Shop', widget.shopsName ?? 'N/A'),
-                      _buildDetailRow('Address', _buildAddressString()),
-                    ],
-                  ),
 
                   // Seller Info (from stream)
                   StreamBuilder<List<BusinessesRecord>>(
@@ -129,6 +122,8 @@ class _ItemProfileWidgetState extends State<ItemProfileWidget> {
                           padding: const EdgeInsets.only(top: 20),
                           child: _buildInfoCard(
                             children: [
+                              _buildDetailRow('City', business.city),
+                              _buildDetailRow('Adress', _buildAddressString(business.streetAdress,business.zipCode)),
                               _buildDetailRow('Seller', business.displayName),
                               _buildDetailRow('Contact', business.email),
                             ],
@@ -147,12 +142,8 @@ class _ItemProfileWidgetState extends State<ItemProfileWidget> {
     );
   }
 
-  String _buildAddressString() {
-    return [
-      widget.street,
-      widget.city,
-      widget.zipCode
-    ].where((part) => part?.isNotEmpty ?? false).join(', ');
+  String _buildAddressString(String street, String zipCode) {
+    return '$street, $zipCode';
   }
 
   Widget _buildInfoCard({required List<Widget> children}) {
