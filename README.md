@@ -351,10 +351,27 @@ Sprint backlog:
 ![image](https://github.com/user-attachments/assets/ca56ec0a-d35c-4502-a911-05db21a315ee)
 
 
+Sprint review:
+
+![image](https://github.com/user-attachments/assets/dda8e8e8-7f37-4a81-b0f3-9b2d41b69217)
+
+Sprint retrospective:
+ What we have done in this sprint:
+ - Added a page for the favourites foods and a page for favourites clothes
+ - Added User Profile Settings Page where you can access your favourites pages, change your password and sign out
+ - Compleated the search bar
+ - Added an item profile page for each page to display its info
+ - Polished the looks of the app
+ - Added in both supermarket and clothing screens a filter for ascending/descending price and max expiration date
+ - For businesses, they can change between their clothing and food screens
+
+ What we haven't done:
+ - Implement a way for the app to notify users about their newly added products because it is harder than what we thought and we did not have time to implement
+ - Implement Products stats for businesses: instead we made a counter of how many users clicked on favourite for each item.
 
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
-| Filipe | | | | |
+| Filipe |⭐️|⭐️|⭐️|⭐️|
 | João | | | | |
 | Raul | | | | |
 | Tiago | | | | |
@@ -363,7 +380,7 @@ Sprint backlog:
 
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
-| Filipe | | | | |
+| Filipe |||||
 | João | | | | |
 | Raul | | | | |
 | Tiago | | | | |
