@@ -248,16 +248,18 @@ class _ClothingItemCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => context.pushNamed(
-          'ItemProfile',
-          queryParameters: {
-            'name': serializeParam(item.name, ParamType.String),
-            'image': serializeParam(item.image, ParamType.String),
-            'price': serializeParam(item.price, ParamType.double),
-            'brand': serializeParam(item.brand, ParamType.String),
-            'quantity': serializeParam(item.quantity, ParamType.int),
-            'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
-          }.withoutNulls,
-        ),
+  'ItemProfile',
+  queryParameters: {
+    'name': serializeParam(item.name, ParamType.String),
+    'image': serializeParam(item.image, ParamType.String),
+    'price': serializeParam(item.price, ParamType.double),
+    'brand': serializeParam(item.brand, ParamType.String),
+    'quantity': serializeParam(item.quantity, ParamType.int),
+    'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
+    'seller': serializeParam(item.createdBy, ParamType.String),
+  }.withoutNulls,
+),
+
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(

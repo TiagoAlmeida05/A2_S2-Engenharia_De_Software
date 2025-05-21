@@ -110,29 +110,32 @@ class _ItemProfileWidgetState extends State<ItemProfileWidget> {
 
 
                   // Seller Info (from stream)
-                  StreamBuilder<List<BusinessesRecord>>(
-                    stream: queryBusinessesRecord(
-                      queryBuilder: (business) => business.where('email', isEqualTo: widget.seller),
-                      singleRecord: true,
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                        final business = snapshot.data!.first;
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: _buildInfoCard(
-                            children: [
-                              _buildDetailRow('City', business.city),
-                              _buildDetailRow('Adress', _buildAddressString(business.streetAdress,business.zipCode)),
-                              _buildDetailRow('Seller', business.displayName),
-                              _buildDetailRow('Contact', business.email),
-                            ],
-                          ),
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  ),
+                  widget.seller != null
+  ? StreamBuilder<List<BusinessesRecord>>(
+      stream: queryBusinessesRecord(
+        queryBuilder: (business) =>
+            business.where('email', isEqualTo: widget.seller),
+        singleRecord: true,
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          final business = snapshot.data!.first;
+          return Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: _buildInfoCard(
+              children: [
+                _buildDetailRow('City', business.city),
+                _buildDetailRow('Adress', _buildAddressString(business.streetAdress, business.zipCode)),
+                _buildDetailRow('Seller', business.displayName),
+                _buildDetailRow('Contact', business.email),
+              ],
+            ),
+          );
+        }
+        return const SizedBox(); // still loading or not found
+      },
+    )
+  : const SizedBox(), // ← this was missing
                 ],
               ),
             ),
