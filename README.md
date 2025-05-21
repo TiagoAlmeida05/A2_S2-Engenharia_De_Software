@@ -374,7 +374,7 @@ Sprint retrospective:
 | Filipe |⭐️|⭐️|⭐️|⭐️|
 | João | | | | |
 | Raul | | | | |
-| Tiago | | | | |
+| Tiago | ⭐️|⭐️ |⭐️ |⭐️ |
 
 ### Sprint 4
 
