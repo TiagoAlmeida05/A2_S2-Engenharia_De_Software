@@ -18,11 +18,11 @@ export '/pages/business_item_page/business_item_page_widget.dart'
 export '/pages/add_new_item/add_new_item_widget.dart' show AddNewItemWidget;
 export '/pages/add_new_item_copy/add_new_item_copy_widget.dart'
     show AddNewItemCopyWidget;
-export '/user_profile_settings/user_profile_settings_widget.dart'
+export '/pages/user_profile_settings/user_profile_settings_widget.dart'
     show UserProfileSettingsWidget;
-export '/favourites_clothes_page/favourites_clothes_page_widget.dart'
+export '/pages/favourites_clothes_page/favourites_clothes_page_widget.dart'
     show FavouritesClothesPageWidget;
-export '/favourites_foods_pageaaa/favourites_foods_pageaaa_widget.dart'
+export '/pages/favourites_foods_pageaaa/favourites_foods_pageaaa_widget.dart'
     show FavouritesFoodsPageaaaWidget;
 export '/pages/supermarket_screen_copy/supermarket_screen_copy_widget.dart'
     show SupermarketScreenCopyWidget;

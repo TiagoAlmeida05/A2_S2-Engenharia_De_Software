@@ -6,7 +6,7 @@ import '/flutter_flow/flutter_flow_toggle_icon.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
-
+import '/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -114,61 +114,60 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
 
                 // Filters
                 Row(
-  children: [
-    Expanded(
-      child: DropdownButtonFormField<String>(
-        value: _model.priceOrder,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          labelText: 'Sort by',
-          labelStyle: FlutterFlowTheme.of(context).labelMedium,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-        ),
-        icon: const Icon(Icons.arrow_drop_down),
-        items: const [
-          DropdownMenuItem(
-            value: 'asc',
-            child: Text('Price: Low to High'),
-          ),
-          DropdownMenuItem(
-            value: 'desc',
-            child: Text('Price: High to Low'),
-          ),
-        ],
-        onChanged: (val) {
-          setState(() {
-            _model.priceOrder = val!;
-          });
-        },
-      ),
-    ),
-    const SizedBox(width: 12.0),
-    TextButton.icon(
-      icon: const Icon(Icons.date_range),
-      label: Text(
-        _model.maxExpirationDate != null
-            ? dateTimeFormat('yMMMd', _model.maxExpirationDate!)
-            : 'Max Expiration',
-      ),
-      onPressed: () async {
-        final picked = await showDatePicker(
-          context: context,
-          initialDate: _model.maxExpirationDate ?? DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2100),
-        );
-        if (picked != null) {
-          setState(() => _model.maxExpirationDate = picked);
-        }
-      },
-    ),
-  ],
-),
-
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: _model.priceOrder,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                          labelText: 'Sort by',
+                          labelStyle: FlutterFlowTheme.of(context).labelMedium,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          filled: true,
+                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                        ),
+                        icon: const Icon(Icons.arrow_drop_down),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'asc',
+                            child: Text('Price: Low to High'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'desc',
+                            child: Text('Price: High to Low'),
+                          ),
+                        ],
+                        onChanged: (val) {
+                          setState(() {
+                            _model.priceOrder = val!;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12.0),
+                    TextButton.icon(
+                      icon: const Icon(Icons.date_range),
+                      label: Text(
+                        _model.maxExpirationDate != null
+                            ? dateTimeFormat('yMMMd', _model.maxExpirationDate!)
+                            : 'Max Expiration',
+                      ),
+                      onPressed: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _model.maxExpirationDate ?? DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null) {
+                          setState(() => _model.maxExpirationDate = picked);
+                        }
+                      },
+                    ),
+                  ],
+                ),
 
                 const SizedBox(height: 12.0),
 
@@ -217,75 +216,99 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
                         itemBuilder: (context, index) {
                           final item = items[index];
                           return InkWell(
-  onTap: () => context.pushNamed(
-  'ItemProfileCopy',
-  queryParameters: {
-    'name': serializeParam(item.name, ParamType.String),
-    'image': serializeParam(item.image, ParamType.String),
-    'price': serializeParam(item.price, ParamType.double),
-    'quantity': serializeParam(item.quantity, ParamType.int),
-    'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
-    'seller': serializeParam(item.createdBy, ParamType.String),
-  }.withoutNulls,
-),
-  child: Card(
-    margin: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              item.image,
-              width: 64,
-              height: 64,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.broken_image, size: 64),
-            ),
-          ),
-          const SizedBox(width: 12.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 4.0),
-                Text(
-                  '${item.price.toStringAsFixed(2)} € • Expires ${dateTimeFormat("d/M/y", item.expirationDate!)}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          ToggleIcon(
-            value: item.favouritesFood.contains(currentUser?.reference),
-            onIcon: const Icon(Icons.star, color: Colors.yellow),
-            offIcon: const Icon(Icons.star_border),
-            onPressed: () async {
-              final ref = currentUser?.reference;
-              if (ref == null) return;
+                            onTap: () => context.pushNamed(
+                              'ItemProfileCopy',
+                              queryParameters: {
+                                'name': serializeParam(item.name, ParamType.String),
+                                'image': serializeParam(item.image, ParamType.String),
+                                'price': serializeParam(item.price, ParamType.double),
+                                'quantity': serializeParam(item.quantity, ParamType.int),
+                                'endsBy': serializeParam(item.expirationDate, ParamType.DateTime),
+                                'seller': serializeParam(item.createdBy, ParamType.String),
+                              }.withoutNulls,
+                            ),
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.network(
+                                        item.image,
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) =>
+                                            const Icon(Icons.broken_image, size: 64),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12.0),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
+                                          const SizedBox(height: 4.0),
+                                          Text(
+                                            '${item.price.toStringAsFixed(2)} € • Expires ${dateTimeFormat("d/M/y", item.expirationDate!)}',
+                                            style: Theme.of(context).textTheme.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    ToggleIcon(
+                                      value: item.favouritesFood.contains(currentUser?.reference),
+                                      onIcon: const Icon(Icons.star, color: Colors.yellow),
+                                      offIcon: const Icon(Icons.star_border),
+                                      onPressed: () async {
+                                        final ref = currentUser?.reference;
+                                        if (ref == null) return;
 
-              final update = item.favouritesFood.contains(ref)
-                  ? FieldValue.arrayRemove([ref])
-                  : FieldValue.arrayUnion([ref]);
+                                        final update = item.favouritesFood.contains(ref)
+                                            ? FieldValue.arrayRemove([ref])
+                                            : FieldValue.arrayUnion([ref]);
 
-              await item.reference.update({'FavouritesFood': update});
-            },
-          ),
-        ],
-      ),
-    ),
-  ),
-);
+                                        await item.reference.update({'FavouritesFood': update});
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
                         },
                       );
                     },
+                  ),
+                ),
+
+                // Profile Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  child: FFButtonWidget(
+                    onPressed: () async {
+                      context.pushNamed(UserProfileSettingsWidget.routeName);
+                    },
+                    text: 'Profile',
+                    options: FFButtonOptions(
+                      height: 40.0,
+                      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                      color: FlutterFlowTheme.of(context).primary,
+                      textStyle: FlutterFlowTheme.of(context)
+                          .titleSmall
+                          .override(color: Colors.white),
+                      elevation: 0.0,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
                 ),
               ],

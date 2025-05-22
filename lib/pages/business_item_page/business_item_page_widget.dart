@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/bottom_sheet_page_widget.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,8 @@ class BusinessItemPageWidget extends StatefulWidget {
   static const String routePath = '/businessItemPage';
 
   @override
-  State<BusinessItemPageWidget> createState() => _BusinessItemPageWidgetState();
+  State<BusinessItemPageWidget> createState() =>
+      _BusinessItemPageWidgetState();
 }
 
 class _BusinessItemPageWidgetState extends State<BusinessItemPageWidget> {
@@ -38,22 +40,29 @@ class _BusinessItemPageWidgetState extends State<BusinessItemPageWidget> {
         child: const Icon(Icons.menu, color: Colors.white),
       ),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF71C0EA),
-        title: Text(
-          'Listed Foods',
-          style: GoogleFonts.inter(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+  backgroundColor: const Color(0xFF71C0EA),
+  leading: IconButton(
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    onPressed: () => context.pop(),
+  ),
+  title: Text(
+    'Listed Foods',
+    style: GoogleFonts.inter(
+      color: Colors.white,
+      fontSize: 22,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  centerTitle: true,
+  elevation: 0,
+),
+
       body: StreamBuilder<List<FoodRecord>>(
         stream: queryFoodRecord(
           queryBuilder: (foods) => foods
               .where('created_by', isEqualTo: currentUserEmail)
-              .where('expiration_date', isGreaterThanOrEqualTo: getCurrentTimestamp)
+              .where('expiration_date',
+                  isGreaterThanOrEqualTo: getCurrentTimestamp)
               .orderBy('expiration_date'),
         ),
         builder: (context, snapshot) {
@@ -124,6 +133,14 @@ class _FoodItemCard extends StatelessWidget {
                       width: 120,
                       height: 120,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) => Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.broken_image,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -139,7 +156,7 @@ class _FoodItemCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87
+                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -148,7 +165,8 @@ class _FoodItemCard extends StatelessWidget {
                         children: [
                           _buildDetailRow('Price', '${food.price}€'),
                           const SizedBox(width: 16),
-                          _buildDetailRow('Quantity', food.quantity.toString()),
+                          _buildDetailRow(
+                              'Quantity', food.quantity.toString()),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -163,12 +181,15 @@ class _FoodItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // Rating and Delete Button
+            // Favorites count and Delete Button
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 20),
                 const SizedBox(width: 4),
-                Text('4.5', style: GoogleFonts.inter(color: Colors.black54)),
+                Text(
+                  food.favouritesFood.length.toString(),
+                  style: GoogleFonts.inter(color: Colors.black54),
+                ),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
@@ -214,7 +235,10 @@ class _FoodItemCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF71C0EA))),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF71C0EA)),
+            ),
           ),
           TextButton(
             onPressed: () {

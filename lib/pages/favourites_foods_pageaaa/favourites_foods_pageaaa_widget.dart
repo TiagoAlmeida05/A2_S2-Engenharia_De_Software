@@ -244,14 +244,32 @@ class _FavouritesFoodsPageaaaWidgetState
                                   ),
                                 ),
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    listViewFoodRecord.image,
-                                    width: 200.0,
-                                    height: 200.0,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                ),
+  borderRadius: BorderRadius.circular(8.0),
+  child: Image.network(
+    listViewFoodRecord.image,
+    width: 200.0,
+    height: 200.0,
+    fit: BoxFit.cover, // Changed from fitWidth to cover for better display
+    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+      if (loadingProgress == null) return child;
+      return Center(
+        child: CircularProgressIndicator(
+          value: loadingProgress.expectedTotalBytes != null
+              ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+              : null,
+        ),
+      );
+    },
+    errorBuilder: (context, error, stackTrace) {
+      return Container(
+        width: 200.0,
+        height: 200.0,
+        color: Colors.grey[200],
+        child: Icon(Icons.fastfood, size: 50, color: Colors.grey[400]),
+      );
+    },
+  ),
+),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 16.0, 0.0, 0.0),
