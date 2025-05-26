@@ -63,6 +63,7 @@ Take a look at the following links to learn some techniques:
 * [The Best Elevator Pitch Examples, Templates, and Tactics - A Guide to Writing an Unforgettable Elevator Speech, by strategypeak.com](https://strategypeak.com/elevator-pitch-examples/)
 * [Top 7 Killer Elevator Pitch Examples, by toggl.com](https://blog.toggl.com/elevator-pitch-examples/)
 -->
+Every year, businesses throw away perfectly good food and clothing simply because they’re about to hit an expiration date or go out of season. Our app, ShelfSaver, connects local shops and brands with users looking for great deals on items that need to go — reducing waste while saving money. Businesses can quickly list products approaching their expiration or clearance, and customers get real-time access to discounted, quality goods nearby. It’s a win for wallets, a win for businesses, and a win for the planet.
 
 ## Requirements
 
