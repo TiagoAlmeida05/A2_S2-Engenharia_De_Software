@@ -128,12 +128,12 @@ class _UserProfileSettingsWidgetState
                               ),
                             ),
                             subtitle: Text(
-                currentUserEmail,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.black87,
-                ),
-              ),
+                              currentUserEmail,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black87,
+                              ),
+                            ),
                           ),
                           const Divider(height: 1),
                           ListTile(
@@ -249,6 +249,10 @@ class _UserProfileSettingsWidgetState
                               controller: _model.newPasswordTextController,
                               focusNode: _model.newPasswordFocusNode,
                               obscureText: !_model.newPasswordVisibility,
+                              style: const TextStyle(          // changed
+                                color: Colors.black,
+                              ),
+                              cursorColor: Colors.black,         // optional
                               decoration: InputDecoration(
                                 labelText: 'New Password',
                                 labelStyle:
@@ -281,6 +285,10 @@ class _UserProfileSettingsWidgetState
                                   _model.confirmNewPasswordTextController,
                               focusNode: _model.confirmNewPasswordFocusNode,
                               obscureText: !_model.confirmNewPasswordVisibility,
+                              style: const TextStyle(          // changed
+                                color: Colors.black,
+                              ),
+                              cursorColor: Colors.black,         // optional
                               decoration: InputDecoration(
                                 labelText: 'Confirm New Password',
                                 labelStyle:
