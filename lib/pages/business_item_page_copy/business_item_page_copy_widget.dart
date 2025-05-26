@@ -16,11 +16,11 @@ class BusinessItemPageCopyWidget extends StatefulWidget {
   static const String routePath = '/businessItemPageCopy';
 
   @override
-  State<BusinessItemPageCopyWidget> createState() => 
+  State<BusinessItemPageCopyWidget> createState() =>
       _BusinessItemPageCopyWidgetState();
 }
 
-class _BusinessItemPageCopyWidgetState 
+class _BusinessItemPageCopyWidgetState
     extends State<BusinessItemPageCopyWidget> {
   late BusinessItemPageCopyModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -68,14 +68,16 @@ class _BusinessItemPageCopyWidgetState
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pushNamed(LoginPageCopyWidget.routeName),
+          onPressed: () =>
+              context.pushNamed(LoginPageCopyWidget.routeName),
         ),
       ),
       body: StreamBuilder<List<ClothesRecord>>(
         stream: queryClothesRecord(
           queryBuilder: (clothes) => clothes
               .where('created_by', isEqualTo: currentUserEmail)
-              .where('expiration_date', isGreaterThanOrEqualTo: getCurrentTimestamp)
+              .where('expiration_date',
+                  isGreaterThanOrEqualTo: getCurrentTimestamp)
               .orderBy('expiration_date'),
         ),
         builder: (context, snapshot) {
@@ -149,6 +151,10 @@ class _ClothesItemCard extends StatelessWidget {
                       width: 120,
                       height: 120,
                       fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stack) => Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.broken_image, size: 48),
+                      ),
                     ),
                   ),
                 ),
@@ -164,7 +170,7 @@ class _ClothesItemCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87
+                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -176,25 +182,32 @@ class _ClothesItemCard extends StatelessWidget {
                         children: [
                           _buildDetailRow('Price', '${clothes.price}€'),
                           const SizedBox(width: 16),
-                          _buildDetailRow('Quantity', clothes.quantity.toString()),
+                          _buildDetailRow(
+                              'Quantity', clothes.quantity.toString()),
                         ],
                       ),
                       const SizedBox(height: 8),
                       // Expiration
-                      _buildDetailRow('Ends by', 
-                        dateTimeFormat('d MMM y', clothes.expirationDate!)),
+                      _buildDetailRow(
+                        'Ends by',
+                        dateTimeFormat('d MMM y', clothes.expirationDate!),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            // Rating and Delete
+            // Favorites count and Delete
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 20),
                 const SizedBox(width: 4),
-                Text('4.5', style: GoogleFonts.inter(color:Colors.white)),
+                // ← here’s your favorite‐count
+                Text(
+                  clothes.favouriteClothes.length.toString(),
+                  style: GoogleFonts.inter(color: Colors.black87),
+                ),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
@@ -240,7 +253,8 @@ class _ClothesItemCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF71C0EA))),
+            child: const Text('Cancel',
+                style: TextStyle(color: Color(0xFF71C0EA))),
           ),
           TextButton(
             onPressed: () {

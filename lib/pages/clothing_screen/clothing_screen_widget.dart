@@ -3,13 +3,15 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '/index.dart';
-
 import '/auth/firebase_auth/auth_util.dart';
-import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_toggle_icon.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/backend/backend.dart';
+import 'dart:ui';
+import 'package:provider/provider.dart';
 
 class ClothingScreenWidget extends StatefulWidget {
   const ClothingScreenWidget({super.key});
@@ -336,26 +338,20 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
                                         ],
                                       ),
                                     ),
-ToggleIcon(
-  value: item.favouriteClothes.contains(currentUser?.reference),
-  onPressed: () async {
-    final userRef = currentUser?.reference;
-    if (userRef == null) return;
-    
-    final isFavorite = item.favouriteClothes.contains(userRef);
-    await item.reference.update({
-      'favourite_clothes': isFavorite
-          ? FieldValue.arrayRemove([userRef])
-          : FieldValue.arrayUnion([userRef]),
-    });
-    
-    // Force a rebuild of the widget
-    if (mounted) setState(() {});
-  },
-  onIcon: const Icon(Icons.star, color: Colors.yellow),
-  offIcon: const Icon(Icons.star_border, color: Colors.grey),
-),
-
+                                    ToggleIcon(
+                                      value: item.favouriteClothes.contains(currentUser?.reference),
+                                      onIcon: const Icon(Icons.star, color: Colors.yellow),
+                                      offIcon: const Icon(Icons.star_border),
+                                      onPressed: () async {
+                                        final ref = currentUser?.reference;
+                                        if (ref == null) return;
+                                        
+                                        final update = item.favouriteClothes.contains(ref)
+                                          ? FieldValue.arrayRemove([ref])
+                                          : FieldValue.arrayUnion([ref]);
+                                        await item.reference.update({'FavouriteClothes': update});
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),
