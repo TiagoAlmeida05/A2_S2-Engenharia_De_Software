@@ -372,18 +372,12 @@ Sprint retrospective:
 | | Filipe | João | Raul | Tiago |
 |-| ------ | ---- | ---- | ----- |
 | Filipe |⭐️|⭐️|⭐️|⭐️|
-| João | | | | |
-| Raul | | | | |
+| João | ⭐️|⭐️ |⭐️|⭐️|
+| Raul |⭐️ | ⭐️|⭐️ |⭐️ |
 | Tiago | ⭐️|⭐️ |⭐️ |⭐️ |
 
 ### Sprint 4
 
-| | Filipe | João | Raul | Tiago |
-|-| ------ | ---- | ---- | ----- |
-| Filipe |||||
-| João | | | | |
-| Raul | | | | |
-| Tiago | | | | |
 
 ### Final Release
 
