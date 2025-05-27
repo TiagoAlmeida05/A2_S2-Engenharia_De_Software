@@ -23,8 +23,7 @@ class UserProfileSettingsWidget extends StatefulWidget {
       _UserProfileSettingsWidgetState();
 }
 
-class _UserProfileSettingsWidgetState
-    extends State<UserProfileSettingsWidget> {
+class _UserProfileSettingsWidgetState extends State<UserProfileSettingsWidget> {
   late UserProfileSettingsModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -60,7 +59,7 @@ class _UserProfileSettingsWidgetState
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Scaffold(
-            backgroundColor: const Color(0xFFF1F4F8),
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             body: Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(
@@ -77,7 +76,7 @@ class _UserProfileSettingsWidgetState
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: const Color(0xFFF1F4F8),
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: AppBar(
               backgroundColor: const Color(0xFF71C0EA),
               automaticallyImplyLeading: false,
@@ -97,33 +96,34 @@ class _UserProfileSettingsWidgetState
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              centerTitle: false,
+              centerTitle: true,
               elevation: 0.0,
             ),
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    // —— PROFILE CARD —— 
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      elevation: 2,
-                      color: Colors.white,
-                      child: Column(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[850],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // —— PROFILE CARD (no card bg) —— 
+                      Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
                             leading: const Icon(
                               Icons.email_outlined,
-                              color: Colors.black54,
+                              color: Colors.white70,
                             ),
                             title: const Text(
                               'Email',
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -131,30 +131,30 @@ class _UserProfileSettingsWidgetState
                               currentUserEmail,
                               style: const TextStyle(
                                 fontSize: 16.0,
-                                color: Colors.black87,
+                                color: Colors.white70,
                               ),
                             ),
                           ),
-                          const Divider(height: 1),
+                          const Divider(height: 1, color: Colors.white24),
                           ListTile(
                             leading: const Icon(
                               Icons.checkroom_outlined,
-                              color: Colors.black54,
+                              color: Colors.white70,
                             ),
                             title: const Text(
                               'Favourites: Clothes',
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             trailing: FlutterFlowIconButton(
                               borderRadius: 20.0,
                               buttonSize: 44.0,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: Colors.grey[700],
                               icon: const Icon(
                                 Icons.arrow_forward_ios,
-                                color: Colors.black54,
+                                color: Colors.white70,
                                 size: 20.0,
                               ),
                               onPressed: () {
@@ -164,26 +164,26 @@ class _UserProfileSettingsWidgetState
                               },
                             ),
                           ),
-                          const Divider(height: 1),
+                          const Divider(height: 1, color: Colors.white24),
                           ListTile(
                             leading: const Icon(
                               Icons.fastfood_outlined,
-                              color: Colors.black54,
+                              color: Colors.white70,
                             ),
                             title: const Text(
                               'Favourites: Foods',
                               style: TextStyle(
-                                color: Colors.black87,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             trailing: FlutterFlowIconButton(
                               borderRadius: 20.0,
                               buttonSize: 44.0,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: Colors.grey[700],
                               icon: const Icon(
                                 Icons.arrow_forward_ios,
-                                color: Colors.black54,
+                                color: Colors.white70,
                                 size: 20.0,
                               ),
                               onPressed: () {
@@ -195,19 +195,11 @@ class _UserProfileSettingsWidgetState
                           ),
                         ],
                       ),
-                    ),
 
-                    const SizedBox(height: 24.0),
+                      const SizedBox(height: 24.0),
 
-                    // — Account Settings —
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
+                      // — Account Settings (no container bg) —
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
@@ -215,12 +207,11 @@ class _UserProfileSettingsWidgetState
                             style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: Colors.white,
                             ),
                           ),
-                          const Divider(height: 24.0),
+                          const Divider(height: 24.0, color: Colors.white24),
 
-                          // Password Change Section
                           FFButtonWidget(
                             onPressed: () => setState(() {
                               FFAppState().VisibilidadeNewPassword =
@@ -230,13 +221,13 @@ class _UserProfileSettingsWidgetState
                             options: FFButtonOptions(
                               width: double.infinity,
                               height: 44.0,
-                              color: Colors.white,
+                              color: Colors.grey[700],
                               textStyle: const TextStyle(
-                                color: Colors.blue,
+                                color: Colors.white,
                                 fontSize: 16.0,
                               ),
                               borderSide: BorderSide(
-                                color: Colors.grey.shade300,
+                                color: Colors.grey.shade600,
                                 width: 1.0,
                               ),
                               borderRadius: BorderRadius.circular(8.0),
@@ -249,14 +240,13 @@ class _UserProfileSettingsWidgetState
                               controller: _model.newPasswordTextController,
                               focusNode: _model.newPasswordFocusNode,
                               obscureText: !_model.newPasswordVisibility,
-                              style: const TextStyle(          // changed
-                                color: Colors.black,
+                              style: const TextStyle(
+                                color: Colors.white,
                               ),
-                              cursorColor: Colors.black,         // optional
+                              cursorColor: Colors.white,
                               decoration: InputDecoration(
                                 labelText: 'New Password',
-                                labelStyle:
-                                    const TextStyle(color: Colors.black54),
+                                labelStyle: const TextStyle(color: Colors.white70),
                                 border: _fieldBorder(),
                                 enabledBorder: _fieldBorder(),
                                 focusedBorder: _fieldBorder().copyWith(
@@ -270,7 +260,7 @@ class _UserProfileSettingsWidgetState
                                     _model.newPasswordVisibility
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    color: Colors.black54,
+                                    color: Colors.white70,
                                   ),
                                   onPressed: () => setState(() {
                                     _model.newPasswordVisibility =
@@ -285,14 +275,13 @@ class _UserProfileSettingsWidgetState
                                   _model.confirmNewPasswordTextController,
                               focusNode: _model.confirmNewPasswordFocusNode,
                               obscureText: !_model.confirmNewPasswordVisibility,
-                              style: const TextStyle(          // changed
-                                color: Colors.black,
+                              style: const TextStyle(
+                                color: Colors.white,
                               ),
-                              cursorColor: Colors.black,         // optional
+                              cursorColor: Colors.white,
                               decoration: InputDecoration(
                                 labelText: 'Confirm New Password',
-                                labelStyle:
-                                    const TextStyle(color: Colors.black54),
+                                labelStyle: const TextStyle(color: Colors.white70),
                                 border: _fieldBorder(),
                                 enabledBorder: _fieldBorder(),
                                 focusedBorder: _fieldBorder().copyWith(
@@ -306,7 +295,7 @@ class _UserProfileSettingsWidgetState
                                     _model.confirmNewPasswordVisibility
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    color: Colors.black54,
+                                    color: Colors.white70,
                                   ),
                                   onPressed: () => setState(() {
                                     _model.confirmNewPasswordVisibility =
@@ -318,18 +307,15 @@ class _UserProfileSettingsWidgetState
                             const SizedBox(height: 16.0),
                             FFButtonWidget(
                               onPressed: () async {
-                                if (_model.confirmNewPasswordTextController
-                                        .text ==
+                                if (_model.confirmNewPasswordTextController.text ==
                                     _model.newPasswordTextController.text) {
                                   await authManager.updatePassword(
-                                    newPassword:
-                                        _model.newPasswordTextController.text,
+                                    newPassword: _model.newPasswordTextController.text,
                                     context: context,
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                          'Password changed successfully!'),
+                                      content: Text('Password changed successfully!'),
                                       duration: Duration(seconds: 4),
                                     ),
                                   );
@@ -357,38 +343,38 @@ class _UserProfileSettingsWidgetState
                           ],
                         ],
                       ),
-                    ),
 
-                    const SizedBox(height: 24.0),
+                      const SizedBox(height: 24.0),
 
-                    // — Sign Out —
-                    FFButtonWidget(
-                      onPressed: () async {
-                        GoRouter.of(context).prepareAuthEvent();
-                        await authManager.signOut();
-                        GoRouter.of(context).clearRedirectLocation();
-                        context.pushNamedAuth(
-                          LoginPageWidget.routeName,
-                          context.mounted,
-                        );
-                      },
-                      text: 'Sign Out',
-                      options: FFButtonOptions(
-                        width: double.infinity,
-                        height: 44.0,
-                        color: Colors.white,
-                        textStyle: const TextStyle(
-                          color: Color(0xFFE65454),
-                          fontSize: 16.0,
+                      // — Sign Out (button background changed for dark theme) —
+                      FFButtonWidget(
+                        onPressed: () async {
+                          GoRouter.of(context).prepareAuthEvent();
+                          await authManager.signOut();
+                          GoRouter.of(context).clearRedirectLocation();
+                          context.pushNamedAuth(
+                            LoginPageWidget.routeName,
+                            context.mounted,
+                          );
+                        },
+                        text: 'Sign Out',
+                        options: FFButtonOptions(
+                          width: double.infinity,
+                          height: 44.0,
+                          color: Colors.grey[700],
+                          textStyle: const TextStyle(
+                            color: Color(0xFFE65454),
+                            fontSize: 16.0,
+                          ),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade600,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

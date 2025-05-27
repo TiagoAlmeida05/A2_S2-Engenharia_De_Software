@@ -104,25 +104,25 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           child: Container(
                             padding: const EdgeInsets.all(24),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FlutterFlowTheme.of(context).secondaryBackground,
                               borderRadius: BorderRadius.circular(16),
+                              
                             ),
                             child: Column(
                               children: [
                                 Text(
                                   'Welcome Back',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF052A7C),
-                                  ),
+                                  style: FlutterFlowTheme.of(context).headlineSmall.override(
+                                         fontWeight: FontWeight.bold,
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                      ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Please enter your details',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                         color: FlutterFlowTheme.of(context).secondaryText,
+                                      ),
                                 ),
                                 const SizedBox(height: 24),
                                 
@@ -130,60 +130,71 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                 TextFormField(
                                   controller: _model.usernameTextController,
                                   focusNode: _model.usernameFocusNode,
-                                  style: TextStyle(color: Colors.black), // Add this line
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                        font: GoogleFonts.inter(),
+                                  
+                                      ),
                                   decoration: InputDecoration(
                                     labelText: 'Email',
-                                    labelStyle: TextStyle(color: Color(0xFF052A7C)), // Optional: style for label
+                                    labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                                          font: GoogleFonts.inter(),
+                                          letterSpacing: 0.0,
+                                        ),
                                     prefixIcon: Icon(Icons.email_outlined, color: Color(0xFF71C0EA)),
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(color: Colors.grey[300]!),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(color: Color(0xFF71C0EA), width: 2),
-                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: Colors.grey[300]!),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: FlutterFlowTheme.of(context).primary, width: 2),
+                                  ),
                                     filled: true,
-                                    fillColor: Colors.grey[50],
+                                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
                                   ),
                                   keyboardType: TextInputType.emailAddress,
                                 ),
-                                
+                                const SizedBox(height: 16),
                                 // Password field
                                 TextFormField(
                                   controller: _model.passwordTextController,
                                   focusNode: _model.textFieldFocusNode,
                                   obscureText: !_model.passwordVisibility,
-                                  style: TextStyle(color: Colors.black), // Add this line
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                        font: GoogleFonts.inter(),
+                                        
+                                      ),
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle: TextStyle(color: Color(0xFF052A7C)), // Optional: style for label
+                                    labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                                          font: GoogleFonts.inter(),
+                                      
+                                        ),
                                     prefixIcon: Icon(Icons.lock_outline, color: Color(0xFF71C0EA)),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _model.passwordVisibility 
-                                          ? Icons.visibility 
-                                          : Icons.visibility_off,
-                                        color: Colors.grey[500],
-                                      ),
-                                      onPressed: () => setState(() {
+                                    suffixIcon: InkWell(
+                                      onTap: () => setState(() {
                                         _model.passwordVisibility = !_model.passwordVisibility;
                                       }),
+                                      child: Icon(
+                                        _model.passwordVisibility
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined,
+                                        color: FlutterFlowTheme.of(context).secondaryText,
+                                        size: 22,
+                                      ),
                                     ),
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(color: Colors.grey[300]!),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(color: Color(0xFF71C0EA), width: 2),
-                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: Colors.grey[300]!),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: FlutterFlowTheme.of(context).primary, width: 2),
+                                  ),
                                     filled: true,
-                                    fillColor: Colors.grey[50],
+                                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
                                   ),
                                 ),
-                                  
-                                
                                 // Forgot password
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -191,15 +202,17 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                     onPressed: () => context.pushNamed(ResetPasswordWidget.routeName),
                                     child: Text(
                                       'Forgot Password?',
-                                      style: GoogleFonts.inter(
-                                        color: const Color(0xFF052A7C),
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                            font: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            
+                                            
+                                          ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                
                                 // Login button
                                 FFButtonWidget(
                                   onPressed: () async {
@@ -236,16 +249,16 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   options: FFButtonOptions(
                                     width: double.infinity,
                                     height: 50,
-                                    color: const Color(0xFF71C0EA),
-                                    textStyle: GoogleFonts.inter(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                      width: 1,
-                                    ),
+                          
+                                    color: FlutterFlowTheme.of(context).primary,
+                                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                          font: GoogleFonts.interTight(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          color: Colors.white,
+                                          
+                                        ),
+                          
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
@@ -254,48 +267,56 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        
                         // Sign up prompt
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Don't have an account? ",
-                              style: GoogleFonts.inter(
-                                color: Colors.grey[700],
-                              ),
+                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.inter(),
+                                    color: Colors.white,
+                                    letterSpacing: 0.0,
+                                  ),
                             ),
                             GestureDetector(
                               onTap: () => context.pushNamed(RegisterWidget.routeName),
                               child: Text(
                                 'Sign Up',
-                                style: GoogleFonts.inter(
-                                  color: const Color(0xFF052A7C),
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      color: FlutterFlowTheme.of(context).primary,
+                                      letterSpacing: 0.0,
+                                    ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        
                         // Business login
                         Text(
                           'Are you a business?',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            color: Colors.grey[700],
-                          ),
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.inter(),
+                                color: Colors.white,
+                                letterSpacing: 0.0,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         TextButton(
                           onPressed: () => context.pushNamed(LoginPageCopyWidget.routeName),
                           child: Text(
                             'Login as Business',
-                            style: GoogleFonts.inter(
-                              color: const Color(0xFF052A7C),
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  font: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  letterSpacing: 0.0,
+                                ),
                           ),
                         ),
                       ],

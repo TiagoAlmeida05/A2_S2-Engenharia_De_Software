@@ -23,9 +23,11 @@ class _BusinessItemPageWidgetState extends State<BusinessItemPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: theme.primaryBackground,
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
           context: context,
@@ -40,23 +42,20 @@ class _BusinessItemPageWidgetState extends State<BusinessItemPageWidget> {
         child: const Icon(Icons.menu, color: Colors.white),
       ),
       appBar: AppBar(
-  backgroundColor: const Color(0xFF71C0EA),
-  leading: IconButton(
-    icon: const Icon(Icons.arrow_back, color: Colors.white),
-    onPressed: () => context.pop(),
-  ),
-  title: Text(
-    'Listed Foods',
-    style: GoogleFonts.inter(
-      color: Colors.white,
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-  centerTitle: true,
-  elevation: 0,
-),
-
+        backgroundColor: const Color(0xFF71C0EA),
+        // Remove leading to remove back arrow
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Listed Foods',
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: StreamBuilder<List<FoodRecord>>(
         stream: queryFoodRecord(
           queryBuilder: (foods) => foods
@@ -76,7 +75,7 @@ class _BusinessItemPageWidgetState extends State<BusinessItemPageWidget> {
             return Center(
               child: Text(
                 'No food items found',
-                style: GoogleFonts.inter(color: Colors.black87),
+                style: theme.bodyMedium.override(color: Colors.black87),
               ),
             );
           }
@@ -105,9 +104,11 @@ class _FoodItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
     return Card(
-      color: Colors.white,
-      elevation: 3,
+      color: theme.secondaryBackground, // Use secondaryBackground color
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -118,13 +119,13 @@ class _FoodItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Food Image
+                // Food Image container with same bg color as ClothingScreen little containers
                 Container(
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.grey[200],
+                    color: theme.secondaryBackground,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -134,7 +135,7 @@ class _FoodItemCard extends StatelessWidget {
                       height: 120,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stack) => Container(
-                        color: Colors.grey.shade200,
+                        color: theme.secondaryBackground,
                         child: const Icon(
                           Icons.broken_image,
                           size: 48,
@@ -145,33 +146,32 @@ class _FoodItemCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                // Food Details
+                // Food Details with text styled similarly to ClothingScreen
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Food Name
+                      // Food Name styled like ClothingScreen titleLarge
                       Text(
                         food.name,
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
+                        style: theme.titleLarge.override(
+                          color: theme.primaryText,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      // Price and Quantity
+                      // Price and Quantity styled like ClothingScreen bodyMedium
                       Row(
                         children: [
-                          _buildDetailRow('Price', '${food.price}€'),
+                          _buildDetailRow(context, 'Price', '${food.price}€'),
                           const SizedBox(width: 16),
-                          _buildDetailRow(
-                              'Quantity', food.quantity.toString()),
+                          _buildDetailRow(context, 'Quantity', food.quantity.toString()),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      // Expiration Date
+                      // Expiration Date styled like ClothingScreen bodyMedium
                       _buildDetailRow(
+                        context,
                         'Expires',
                         dateTimeFormat('d MMM y', food.expirationDate!),
                       ),
@@ -181,14 +181,14 @@ class _FoodItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // Favorites count and Delete Button
+            // Favorites count and Delete Button (keep styles consistent)
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 20),
                 const SizedBox(width: 4),
                 Text(
                   food.favouritesFood.length.toString(),
-                  style: GoogleFonts.inter(color: Colors.black54),
+                  style: theme.bodyMedium.override(color: theme.primaryText),
                 ),
                 const Spacer(),
                 IconButton(
@@ -203,22 +203,23 @@ class _FoodItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(BuildContext context, String label, String value) {
+    final theme = FlutterFlowTheme.of(context);
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
             text: '$label: ',
-            style: GoogleFonts.inter(
-              color: Colors.grey[600],
+            style: theme.bodyMedium.override(
               fontWeight: FontWeight.w600,
+              color: theme.primaryText,
             ),
           ),
           TextSpan(
             text: value,
-            style: GoogleFonts.inter(
-              color: Colors.black87,
+            style: theme.bodyMedium.override(
               fontWeight: FontWeight.w500,
+              color: theme.primaryText,
             ),
           ),
         ],

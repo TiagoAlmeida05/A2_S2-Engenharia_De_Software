@@ -32,6 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    ndkVersion = "26.3.11579264"
     namespace "com.mycompany.shelfsaver"
     compileSdkVersion 34
     

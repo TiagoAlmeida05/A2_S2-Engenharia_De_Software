@@ -2,6 +2,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/add_new_item_copy/add_new_item_copy_widget.dart'; // Make sure this import exists
 import '/pages/business_item_page/business_item_page_widget.dart'; // Make sure this import exists
+import '/pages/login_page_copy/login_page_copy_widget.dart'; // Added for login page navigation
+import '/auth/firebase_auth/auth_util.dart'; // Add this import to enable signOut()
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'bottom_sheet_page_copy_model.dart';
@@ -11,7 +13,7 @@ class BottomSheetPageCopyWidget extends StatefulWidget {
   const BottomSheetPageCopyWidget({super.key});
 
   @override
-  State<BottomSheetPageCopyWidget> createState() => 
+  State<BottomSheetPageCopyWidget> createState() =>
       _BottomSheetPageCopyWidgetState();
 }
 
@@ -53,21 +55,37 @@ class _BottomSheetPageCopyWidgetState extends State<BottomSheetPageCopyWidget> {
               ),
             ),
           ),
-          
+
           // Add New Clothes option
           _buildActionTile(
             icon: Icons.add_circle_outlined,
             title: 'Add New Clothes',
             onTap: () => context.pushNamed(AddNewItemCopyWidget.routeName),
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Change to Food Page option
           _buildActionTile(
             icon: Icons.swap_horiz_rounded,
             title: 'Switch to Food Page',
             onTap: () => context.pushNamed(BusinessItemPageWidget.routeName),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Sign Out option
+          _buildActionTile(
+            icon: Icons.logout,
+            title: 'Sign Out',
+            iconColor: Colors.red,
+            textColor: Colors.red,
+            onTap: () async {
+              await authManager.signOut();
+              if (context.mounted) {
+                context.goNamed(LoginPageCopyWidget.routeName);
+              }
+            },
           ),
         ],
       ),
@@ -78,6 +96,8 @@ class _BottomSheetPageCopyWidgetState extends State<BottomSheetPageCopyWidget> {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    Color iconColor = const Color(0xFF71C0EA),
+    Color textColor = Colors.black,
   }) {
     return Material(
       color: Colors.transparent,
@@ -94,8 +114,8 @@ class _BottomSheetPageCopyWidgetState extends State<BottomSheetPageCopyWidget> {
           child: Row(
             children: [
               Icon(
-                icon, 
-                color: const Color(0xFF71C0EA), // Your app's blue color
+                icon,
+                color: iconColor,
                 size: 28,
               ),
               const SizedBox(width: 16),
@@ -105,7 +125,7 @@ class _BottomSheetPageCopyWidgetState extends State<BottomSheetPageCopyWidget> {
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black, // Black text for better visibility
+                    color: textColor,
                   ),
                 ),
               ),

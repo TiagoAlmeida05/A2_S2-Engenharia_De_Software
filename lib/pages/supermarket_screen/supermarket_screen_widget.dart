@@ -304,26 +304,31 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
                   ),
                 ),
 
-                // Profile Button
+                // Profile Button - styled as requested
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                  child: FFButtonWidget(
-                    onPressed: () async {
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
                       context.pushNamed(UserProfileSettingsWidget.routeName);
                     },
-                    text: 'Profile',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context)
-                          .titleSmall
-                          .override(color: Colors.white),
-                      elevation: 0.0,
-                      borderRadius: BorderRadius.circular(8.0),
+                    icon: const Icon(Icons.person, color: Colors.white),
+                    label: Text(
+                      'Profile',
+                      style: FlutterFlowTheme.of(context).titleSmall.override(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                          ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF71C0EA),
+                      minimumSize: const Size(double.infinity, 48),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                      shadowColor: Colors.black26,
                     ),
                   ),
                 ),

@@ -205,7 +205,7 @@ class _FavouritesFoodsPageaaaWidgetState
                                 font: GoogleFonts.outfit(
                                   fontWeight: FontWeight.w500,
                                 ),
-                                color: const Color(0xFF15161E),
+                                color: Colors.white, // Changed to white
                                 fontSize: 24.0,
                               ),
                         ),
@@ -213,14 +213,14 @@ class _FavouritesFoodsPageaaaWidgetState
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
-                          item.price.toString(),
+                          '${item.price.toString()} €', // Added euro sign
                           style: FlutterFlowTheme.of(context)
                               .labelMedium
                               .override(
                                 font: GoogleFonts.plusJakartaSans(
                                   fontWeight: FontWeight.w500,
                                 ),
-                                color: const Color(0xFF606A85),
+                                color: Colors.white, // Changed to white
                                 fontSize: 14.0,
                               ),
                         ),

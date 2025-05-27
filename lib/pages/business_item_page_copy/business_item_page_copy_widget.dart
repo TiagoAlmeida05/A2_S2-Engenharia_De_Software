@@ -39,9 +39,11 @@ class _BusinessItemPageCopyWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: theme.primaryBackground,
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
           context: context,
@@ -57,6 +59,7 @@ class _BusinessItemPageCopyWidgetState
       ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF71C0EA),
+        automaticallyImplyLeading: false, // no back arrow
         title: Text(
           'Listed Clothes',
           style: GoogleFonts.inter(
@@ -66,11 +69,6 @@ class _BusinessItemPageCopyWidgetState
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              context.pushNamed(LoginPageCopyWidget.routeName),
-        ),
       ),
       body: StreamBuilder<List<ClothesRecord>>(
         stream: queryClothesRecord(
@@ -93,7 +91,7 @@ class _BusinessItemPageCopyWidgetState
             return Center(
               child: Text(
                 'No clothes items found',
-                style: GoogleFonts.inter(color: Colors.white),
+                style: theme.bodyMedium.override(color: Colors.white),
               ),
             );
           }
@@ -122,8 +120,10 @@ class _ClothesItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
     return Card(
-      color: Colors.white,
+      color: theme.secondaryBackground, // Use secondaryBackground color
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -141,7 +141,7 @@ class _ClothesItemCard extends StatelessWidget {
                   height: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
+                    color: theme.secondaryBackground,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -166,28 +166,31 @@ class _ClothesItemCard extends StatelessWidget {
                       // Name
                       Text(
                         clothes.name,
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
+                        style: theme.titleLarge.override(
+                          color: theme.primaryText,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       // Brand
-                      _buildDetailRow('Brand', clothes.brand),
+                      _buildDetailRow(context, 'Brand', clothes.brand),
                       const SizedBox(height: 8),
                       // Price and Quantity
                       Row(
                         children: [
-                          _buildDetailRow('Price', '${clothes.price}€'),
+                          _buildDetailRow(
+                              context, 'Price', '${clothes.price}€'),
                           const SizedBox(width: 16),
                           _buildDetailRow(
-                              'Quantity', clothes.quantity.toString()),
+                              context, 'Quantity', clothes.quantity.toString()),
                         ],
                       ),
                       const SizedBox(height: 8),
                       // Expiration
                       _buildDetailRow(
+                        context,
                         'Ends by',
                         dateTimeFormat('d MMM y', clothes.expirationDate!),
                       ),
@@ -203,7 +206,7 @@ class _ClothesItemCard extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   clothes.favouriteClothes.length.toString(),
-                  style: GoogleFonts.inter(color: Colors.black87),
+                  style: theme.bodyMedium.override(color: theme.primaryText),
                 ),
                 const Spacer(),
                 IconButton(
@@ -218,22 +221,23 @@ class _ClothesItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(BuildContext context, String label, String value) {
+    final theme = FlutterFlowTheme.of(context);
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
             text: '$label: ',
-            style: GoogleFonts.inter(
-              color: Colors.grey[600],
+            style: theme.bodyMedium.override(
               fontWeight: FontWeight.w600,
+              color: theme.primaryText,
             ),
           ),
           TextSpan(
             text: value,
-            style: GoogleFonts.inter(
-              color: Colors.black87,
+            style: theme.bodyMedium.override(
               fontWeight: FontWeight.w500,
+              color: theme.primaryText,
             ),
           ),
         ],
