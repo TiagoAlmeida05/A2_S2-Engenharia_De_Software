@@ -136,7 +136,6 @@ class _ClothesItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image
                 Container(
                   width: 120,
                   height: 120,
@@ -198,12 +197,10 @@ class _ClothesItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // Favorites count and Delete
             Row(
               children: [
                 const Icon(Icons.star, color: Colors.amber, size: 20),
                 const SizedBox(width: 4),
-                // ← here’s your favorite‐count
                 Text(
                   clothes.favouriteClothes.length.toString(),
                   style: GoogleFonts.inter(color: Colors.black87),

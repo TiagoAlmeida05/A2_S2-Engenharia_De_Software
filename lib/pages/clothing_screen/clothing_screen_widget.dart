@@ -338,18 +338,35 @@ class _ClothingScreenWidgetState extends State<ClothingScreenWidget> {
                                         ],
                                       ),
                                     ),
-                                    ToggleIcon(
-                                      value: item.favouriteClothes.contains(currentUser?.reference),
-                                      onIcon: const Icon(Icons.star, color: Colors.yellow),
-                                      offIcon: const Icon(Icons.star_border),
-                                      onPressed: () async {
-                                        final ref = currentUser?.reference;
-                                        if (ref == null) return;
-                                        
-                                        final update = item.favouriteClothes.contains(ref)
-                                          ? FieldValue.arrayRemove([ref])
-                                          : FieldValue.arrayUnion([ref]);
-                                        await item.reference.update({'FavouriteClothes': update});
+                                    StreamBuilder<DocumentSnapshot>(
+                                      stream: item.reference.snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          );
+                                        }
+                                        final docData = snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                                        final List<dynamic> favourites = docData['FavouriteClothes'] ?? [];
+                                        final containsCurrentUser = favourites.contains(currentUserReference);
+
+                                        return ToggleIcon(
+                                          value: containsCurrentUser,
+                                          onIcon: const Icon(Icons.star, color: Colors.yellow),
+                                          offIcon: const Icon(Icons.star_border),
+                                          onPressed: () async {
+                                            final ref = currentUserReference;
+                                            if (ref == null) return;
+
+                                            final update = containsCurrentUser
+                                                ? FieldValue.arrayRemove([ref])
+                                                : FieldValue.arrayUnion([ref]);
+
+                                            await item.reference.update({'FavouriteClothes': update});
+                                          },
+                                        );
                                       },
                                     ),
                                   ],

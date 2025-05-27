@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,3 +35,11 @@ final jwtTokenStream = FirebaseAuth.instance
     .idTokenChanges()
     .map((user) async => _currentJwtToken = await user?.getIdToken())
     .asBroadcastStream();
+
+DocumentReference? get currentUserReference {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    return null;
+  }
+  return FirebaseFirestore.instance.collection('users').doc(user.uid);
+}

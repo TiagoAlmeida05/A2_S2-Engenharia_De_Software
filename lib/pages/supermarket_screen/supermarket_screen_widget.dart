@@ -262,19 +262,35 @@ class _SupermarketScreenWidgetState extends State<SupermarketScreenWidget> {
                                         ],
                                       ),
                                     ),
-                                    ToggleIcon(
-                                      value: item.favouritesFood.contains(currentUser?.reference),
-                                      onIcon: const Icon(Icons.star, color: Colors.yellow),
-                                      offIcon: const Icon(Icons.star_border),
-                                      onPressed: () async {
-                                        final ref = currentUser?.reference;
-                                        if (ref == null) return;
+                                    StreamBuilder<DocumentSnapshot>(
+                                      stream: item.reference.snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          );
+                                        }
+                                        final docData = snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                                        final List<dynamic> favourites = docData['FavouritesFood'] ?? [];
+                                        final containsCurrentUser = favourites.contains(currentUserReference);
 
-                                        final update = item.favouritesFood.contains(ref)
-                                            ? FieldValue.arrayRemove([ref])
-                                            : FieldValue.arrayUnion([ref]);
+                                        return ToggleIcon(
+                                          value: containsCurrentUser,
+                                          onIcon: const Icon(Icons.star, color: Colors.yellow),
+                                          offIcon: const Icon(Icons.star_border),
+                                          onPressed: () async {
+                                            final ref = currentUserReference;
+                                            if (ref == null) return;
 
-                                        await item.reference.update({'FavouritesFood': update});
+                                            final update = containsCurrentUser
+                                                ? FieldValue.arrayRemove([ref])
+                                                : FieldValue.arrayUnion([ref]);
+
+                                            await item.reference.update({'FavouritesFood': update});
+                                          },
+                                        );
                                       },
                                     ),
                                   ],

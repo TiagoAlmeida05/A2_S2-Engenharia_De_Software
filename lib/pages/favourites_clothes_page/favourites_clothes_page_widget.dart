@@ -39,358 +39,212 @@ class _FavouritesClothesPageWidgetState
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<UsersRecord>>(
-      stream: queryUsersRecord(
-        singleRecord: true,
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    FlutterFlowTheme.of(context).primary,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        List<UsersRecord> favouritesClothesPageUsersRecordList = snapshot.data!;
-        // Return an empty Container when the item does not exist.
-        if (snapshot.data!.isEmpty) {
-          return Container();
-        }
-        final favouritesClothesPageUsersRecord =
-            favouritesClothesPageUsersRecordList.isNotEmpty
-                ? favouritesClothesPageUsersRecordList.first
-                : null;
-
-        return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Scaffold(
-            key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            appBar: AppBar(
-              backgroundColor: Color(0xFF71C0EA),
-              automaticallyImplyLeading: false,
-              leading: FlutterFlowIconButton(
-                borderRadius: 8.0,
-                buttonSize: 40.0,
-                fillColor: Color(0xFF71C0EA),
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: FlutterFlowTheme.of(context).info,
-                  size: 24.0,
-                ),
-                onPressed: () async {
-                  context.safePop();
-                },
-              ),
-              title: Align(
-                alignment: AlignmentDirectional(0.0, 0.0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 45.0, 0.0),
-                  child: Text(
-                    'My Favorites Clothes',
-                    textAlign: TextAlign.center,
-                    style: FlutterFlowTheme.of(context).headlineMedium.override(
-                          font: GoogleFonts.interTight(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .headlineMedium
-                                .fontStyle,
-                          ),
-                          color: FlutterFlowTheme.of(context).info,
-                          fontSize: 22.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .headlineMedium
-                              .fontStyle,
-                        ),
-                  ),
-                ),
-              ),
-              actions: [],
-              centerTitle: false,
-              elevation: 0.0,
-            ),
-            body: SafeArea(
-              top: true,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                    child: StreamBuilder<List<ClothesRecord>>(
-                      stream: queryClothesRecord(
-                        queryBuilder: (clothesRecord) => clothesRecord.where(
-                          'FavouriteClothes',
-                          arrayContains:
-                              favouritesClothesPageUsersRecord?.reference,
-                        ),
-                      ),
-                      builder: (context, snapshot) {
-                        // Customize what your widget looks like when it's loading.
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  FlutterFlowTheme.of(context).primary,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                        List<ClothesRecord> listViewClothesRecordList =
-                            snapshot.data!;
-
-                        return ListView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: listViewClothesRecordList.length,
-                          itemBuilder: (context, listViewIndex) {
-                            final listViewClothesRecord =
-                                listViewClothesRecordList[listViewIndex];
-                            return Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                ToggleIcon(
-                                  onPressed: () async {
-                                    final favouriteClothesElement =
-                                        favouritesClothesPageUsersRecord
-                                            ?.reference;
-                                    final favouriteClothesUpdate =
-                                        listViewClothesRecord.favouriteClothes
-                                                .contains(
-                                                    favouriteClothesElement)
-                                            ? FieldValue.arrayRemove(
-                                                [favouriteClothesElement])
-                                            : FieldValue.arrayUnion(
-                                                [favouriteClothesElement]);
-                                    await listViewClothesRecord.reference
-                                        .update({
-                                      ...mapToFirestore(
-                                        {
-                                          'FavouriteClothes':
-                                              favouriteClothesUpdate,
-                                        },
-                                      ),
-                                    });
-                                    if (listViewClothesRecord.favouriteClothes
-                                            .contains(
-                                                favouritesClothesPageUsersRecord
-                                                    ?.reference) ==
-                                        true) {
-                                      await listViewClothesRecord.reference
-                                          .update({
-                                        ...mapToFirestore(
-                                          {
-                                            'FavouriteClothes':
-                                                FieldValue.arrayRemove([
-                                              favouritesClothesPageUsersRecord
-                                                  ?.reference
-                                            ]),
-                                          },
-                                        ),
-                                      });
-                                    } else {
-                                      await listViewClothesRecord.reference
-                                          .update({
-                                        ...mapToFirestore(
-                                          {
-                                            'FavouriteClothes':
-                                                FieldValue.arrayUnion([
-                                              favouritesClothesPageUsersRecord
-                                                  ?.reference
-                                            ]),
-                                          },
-                                        ),
-                                      });
-                                    }
-                                  },
-                                  value: listViewClothesRecord.favouriteClothes
-                                      .contains(favouritesClothesPageUsersRecord
-                                          ?.reference),
-                                  onIcon: Icon(
-                                    Icons.star,
-                                    color: Color(0xFFEAEA1F),
-                                    size: 30.0,
-                                  ),
-                                  offIcon: Icon(
-                                    Icons.star,
-                                    color: Color(0xFFCFCFCF),
-                                    size: 30.0,
-                                  ),
-                                ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    listViewClothesRecord.image,
-                                    width: 200.0,
-                                    height: 200.0,
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 16.0, 0.0, 0.0),
-                                  child: Text(
-                                    listViewClothesRecord.name,
-                                    style: FlutterFlowTheme.of(context)
-                                        .headlineMedium
-                                        .override(
-                                          font: GoogleFonts.outfit(
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .headlineMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: Color(0xFF15161E),
-                                          fontSize: 24.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .headlineMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 4.0, 0.0, 0.0),
-                                  child: Text(
-                                    listViewClothesRecord.price.toString(),
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: Color(0xFF606A85),
-                                          fontSize: 14.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Align(
-                                      alignment:
-                                          AlignmentDirectional(-1.0, 0.0),
-                                      child: Text(
-                                        listViewClothesRecord.brand,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: AlignmentDirectional(1.0, 0.0),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            300.0, 0.0, 0.0, 0.0),
-                                        child: Text(
-                                          valueOrDefault<String>(
-                                            listViewClothesRecord.expirationDate
-                                                ?.toString(),
-                                            '0',
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
+    // We no longer need to fetch UsersRecord here — we'll use currentUserReference directly
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF71C0EA),
+        automaticallyImplyLeading: false,
+        leading: FlutterFlowIconButton(
+          borderRadius: 8.0,
+          buttonSize: 40.0,
+          fillColor: const Color(0xFF71C0EA),
+          icon: Icon(
+            Icons.arrow_back,
+            color: FlutterFlowTheme.of(context).info,
+            size: 24.0,
+          ),
+          onPressed: () => context.safePop(),
+        ),
+        title: Align(
+          alignment: AlignmentDirectional(0.0, 0.0),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 45.0),
+            child: Text(
+              'My Favorites Clothes',
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).headlineMedium.override(
+                    font: GoogleFonts.interTight(
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).headlineMedium.fontStyle,
                     ),
+                    color: FlutterFlowTheme.of(context).info,
+                    fontSize: 22.0,
+                    letterSpacing: 0.0,
                   ),
-                ],
-              ),
             ),
           ),
-        );
-      },
+        ),
+        actions: [],
+        centerTitle: false,
+        elevation: 0.0,
+      ),
+      body: SafeArea(
+        top: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: StreamBuilder<List<ClothesRecord>>(
+            stream: queryClothesRecord(
+              queryBuilder: (clothesRecord) => clothesRecord.where(
+                'FavouriteClothes',
+                arrayContains: currentUserReference,
+              ),
+            ),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: SizedBox(
+                    width: 50.0,
+                    height: 50.0,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        FlutterFlowTheme.of(context).primary,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              final clothesList = snapshot.data!;
+              if (clothesList.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No favorite clothes found',
+                    style: FlutterFlowTheme.of(context).bodyMedium,
+                  ),
+                );
+              }
+              return ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: clothesList.length,
+                itemBuilder: (context, index) {
+                  final item = clothesList[index];
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ToggleIcon(
+                        value: item.favouriteClothes.contains(currentUserReference),
+                        onIcon: const Icon(
+                          Icons.star,
+                          color: Color(0xFFEAEA1F),
+                          size: 30.0,
+                        ),
+                        offIcon: const Icon(
+                          Icons.star,
+                          color: Color(0xFFCFCFCF),
+                          size: 30.0,
+                        ),
+                        onPressed: () async {
+                          final favRef = currentUserReference;
+                          if (favRef == null) return;
+                          final isFav = item.favouriteClothes.contains(favRef);
+                          final update = isFav
+                              ? FieldValue.arrayRemove([favRef])
+                              : FieldValue.arrayUnion([favRef]);
+                          await item.reference.update({
+                            'FavouriteClothes': update,
+                          });
+                        },
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: (item.hasImage() && item.image.isNotEmpty)
+                            ? Image.network(
+                                item.image,
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (context, child, progress) {
+                                  if (progress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: progress.expectedTotalBytes != null
+                                          ? progress.cumulativeBytesLoaded /
+                                              progress.expectedTotalBytes!
+                                          : null,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                  width: 200,
+                                  height: 200,
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.broken_image,
+                                    size: 48,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 200,
+                                height: 200,
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image,
+                                  size: 48,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Text(
+                          item.name,
+                          style: FlutterFlowTheme.of(context)
+                              .headlineMedium
+                              .override(
+                                font: GoogleFonts.outfit(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                color: const Color(0xFF15161E),
+                                fontSize: 24.0,
+                              ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          item.price.toString(),
+                          style: FlutterFlowTheme.of(context)
+                              .labelMedium
+                              .override(
+                                font: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                color: const Color(0xFF606A85),
+                                fontSize: 14.0,
+                              ),
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.center,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            item.expirationDate != null
+                                ? dateTimeFormat('d MMM y', item.expirationDate!)
+                                : 'No expiration',
+                            style: FlutterFlowTheme.of(context).bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
